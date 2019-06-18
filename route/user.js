@@ -2,7 +2,7 @@ var router = require("express").Router();
 var fs = require("fs");
 
 
-router.get("/login", (req, res) => {
+router.post("/login", (req, res) => {
     //   console.log(req.method+req.statusCode);
     //  console.log(req);
     console.log(req.body);
