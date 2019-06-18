@@ -1,6 +1,6 @@
 var express = require("express");
 var app = express();
-var fs = require('fs');
+var fs = require("fs");
 
 var key = fs.readFileSync('privatekey.pem');
 var cert = fs.readFileSync('certificate.crt');
@@ -14,3 +14,6 @@ https.createServer({
 	console.log("run on 8086 changed");
 });
 
+var userRouter = require("./route/user");
+
+app.use('/login',userRouter);
