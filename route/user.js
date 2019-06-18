@@ -7,7 +7,7 @@ router.get("/login", (req, res) => {
     //  console.log(req);
     console.log(req.body);
     console.log(req.method);
-    
+    console.log(req.protocol);
     var appid = "wx55bd9c881859ddb5";
     var appsecret = fs.readFileSync("AppSecret");
     console.log(appsecret);

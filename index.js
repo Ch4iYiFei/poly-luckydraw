@@ -16,7 +16,7 @@ https.createServer({
 
 var bodyParser = require('body-parser');
 
-app.use(bodyParser.raw({limit: '50mb'}));
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 
 var userRouter = require("./route/user");
