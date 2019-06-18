@@ -16,4 +16,4 @@ https.createServer({
 
 var userRouter = require("./route/user");
 
-app.use('/login',userRouter);
+app.use('/user',userRouter);
