@@ -11,7 +11,7 @@ router.post("/login", (req, res) => {
     // console.log(req.protocol);
     var appid = "wx55bd9c881859ddb5";
     // var appsecret = fs.readFileSync("AppSecret").toString();
-    var appsecret = fs.readFileSync("AppSecret");
+    var appsecret = require("../AppSecret");
     console.log(appsecret);
 
     if(req.body.code){
