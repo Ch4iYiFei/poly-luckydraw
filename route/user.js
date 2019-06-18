@@ -4,7 +4,8 @@ var fs = require("fs");
 router.get("/login", (req, res) => {
     //res.send("get login message");
     console.log(req.method+req.statusCode);
-    console.log(res);
+    console.log(req);
+    console.log(req.body);
     var appid = "wx55bd9c881859ddb5";
     var appsecret = fs.readFileSync("AppSecret");
     console.log(appsecret);
