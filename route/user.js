@@ -15,8 +15,8 @@ router.post("/login", (req, res) => {
 
     if(req.body.code){
         console.log(req.body.code);
-        console.log("https://api.weixin.qq.com/sns/jscode2session?appid="+appid+"&secret="+appsecret+"&js_code="+req.body+"&grant_type=authorization_code");
-        var options = new URL("https://api.weixin.qq.com/sns/jscode2session?appid="+appid+"&secret="+appsecret+"&js_code="+req.body+"&grant_type=authorization_code");
+        console.log("https://api.weixin.qq.com/sns/jscode2session?appid="+appid+"&secret="+appsecret+"&js_code="+req.body.code+"&grant_type=authorization_code");
+        var options = new URL("https://api.weixin.qq.com/sns/jscode2session?appid="+appid+"&secret="+appsecret+"&js_code="+req.body.code+"&grant_type=authorization_code");
         
         https.request(options, (res) => {
             console.log(res.statusCode);
