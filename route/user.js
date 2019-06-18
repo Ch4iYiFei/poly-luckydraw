@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var fs = require("fs");
-
+var https = require("https");
 
 router.post("/login", (req, res) => {
     //   console.log(req.method+req.statusCode);
@@ -15,8 +15,12 @@ router.post("/login", (req, res) => {
 
     if(req.body.code){
         console.log(req.body.code);
+        var options = new URL("https://api.weixin.qq.com/sns/jscode2session?appid="+appid+"&secret="+appsecret+"&js_code="+req.body+"&grant_type=authorization_code");
+        https.request(options, (res) => {
+            console.log(res.statusCode);
+            console.log(res);
+        });
     }
-    var url = "https://api.weixin.qq.com/sns/jscode2session?appid="+appid+"&secret="+appsecret+"&js_code="+req.body+"&grant_type=authorization_code";
     res.send("get login message");
 });
 
