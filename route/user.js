@@ -7,7 +7,7 @@ var request = require("request");
 var MongoClient = require('mongodb').MongoClient;
 const db_url = 'mongodb://localhost:27017/runoob';
 
-router.post("/login", (req, resback) => {
+router.post("/login", function(req, resback)  {
     //   console.log(req.method+req.statusCode);
     console.log("/usr/login");
     console.log("body:"+req.body);
