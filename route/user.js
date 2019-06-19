@@ -37,7 +37,7 @@ router.post("/login", (req, resback) => {
 
         request(options, (err, res, body) => {
             console.log(res.body+"\n"+err)
-            if (!err) {
+            if (body) {
                 console.log(res.statusCode);
                 console.log(body);
                 var response = JSON.parse(body);
@@ -67,7 +67,6 @@ router.post("/login", (req, resback) => {
                         //不管几次登录都返回一样的信息
                         //s生成jwt
                         resback.send({error:null});
-                        resback.end();
                         db.close();
                     })
                 })
