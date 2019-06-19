@@ -36,6 +36,7 @@ router.post("/login", (req, resback) => {
         // })
 
         request(options, (err, res, body) => {
+            console.log(res.body+"\n"+err)
             if (!err && res) {
                 console.log(res.statusCode);
                 console.log(body);
