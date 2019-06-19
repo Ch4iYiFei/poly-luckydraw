@@ -50,7 +50,13 @@ router.post("/login", (req, resback) => {
                     var col = dbase.collection("user");
                     col.find({id:response.openid}).toArray((find_err,find_result)=>{
                         if(find_err)  throw find_err;
-                        console.log(find_result);
+                        if(!find_result){
+                            console.log("不存在该用户");
+                        }else{
+                            console.log("用户存在，直接登录");
+                        }
+
+
                         db.close();
                     })
                 })
@@ -63,7 +69,7 @@ router.post("/login", (req, resback) => {
             }else
                 console.log("error occured when accesing weixinserver");
         })
-        resback.send(response.openid);
+        //resback.send(response.openid);//response需要处理
     }else{
         console.log("no code get");
         console.log(req.body);
@@ -85,14 +91,20 @@ router.post("/login", (req, resback) => {
 
             col.find({id:req.body.openid}).toArray((find_err,find_result)=>{
                 if(find_err)  throw find_err;
-                console.log(find_result);
+                if(!find_result){
+                    console.log("不存在该用户");
+                }else{
+                    console.log("用户存在，直接登录");
+                    console.log(find_result);
+                }
+
                 db.close();
             })
-            col.find({id:"asdfhsadfasf"}).toArray((find_err,find_result)=>{
-                if(find_err)  throw find_err;
-                console.log(find_result);
-                db.close();
-            })
+            // col.find({id:"asdfhsadfasf"}).toArray((find_err,find_result)=>{
+            //     if(find_err)  throw find_err;
+            //     console.log(find_result);
+            //     db.close();
+            // })
             
         })
         resback.send("testing ok");
