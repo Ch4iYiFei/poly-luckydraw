@@ -35,94 +35,94 @@ router.post("/login", (req, resback) => {
         //     console.log(res.body);
         // })
 
-        return new Promise((resolve,reject)=>{
-            console.log("start new promise");
-            request(options, (err, res, body) => {
-                if(err)
-                {
-                    console.log("into reject");
-                    reject(err);
-                }else {
-                    console.log("into resolve");
-                    resolve(res);
-                }
-            })
-        }).then((res)=>{
-            console.log(res.statusCode);
-            console.log(body);
-            MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
-                if(db_err) throw db_err;
-                var dbase = db.db("lucky");
-                console.log("db connected");
+        // new Promise((resolve,reject)=>{
+        //     console.log("start new promise");
+        //     request(options, (err, res, body) => {
+        //         if(err)
+        //         {
+        //             console.log("into reject");
+        //             reject(err);
+        //         }else {
+        //             console.log("into resolve");
+        //             resolve(res);
+        //         }
+        //     })
+        // }).then((res)=>{
+        //     console.log(res.statusCode);
+        //     console.log(body);
+        //     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+        //         if(db_err) throw db_err;
+        //         var dbase = db.db("lucky");
+        //         console.log("db connected");
 
-                var col = dbase.collection("user");
-                col.find({id:response.openid}).toArray((find_err,find_result)=>{
-                    if(find_err)  throw find_err;
-                    if(find_result.length == 0){
-                        console.log("之前未登录的用户");
-                        //可增加更多的insert项
-                        col.insertOne({ id:response.openid },(insert_err,insert_result)=>{
-                            if(insert_err) throw insert_err;
-                            console.log("插入用户成功");
-                        })
+        //         var col = dbase.collection("user");
+        //         col.find({id:response.openid}).toArray((find_err,find_result)=>{
+        //             if(find_err)  throw find_err;
+        //             if(find_result.length == 0){
+        //                 console.log("之前未登录的用户");
+        //                 //可增加更多的insert项
+        //                 col.insertOne({ id:response.openid },(insert_err,insert_result)=>{
+        //                     if(insert_err) throw insert_err;
+        //                     console.log("插入用户成功");
+        //                 })
                         
-                    }else{
-                        console.log("用户存在，直接登录");
-                        console.log(find_result);
+        //             }else{
+        //                 console.log("用户存在，直接登录");
+        //                 console.log(find_result);
                         
-                    }
-                    //不管几次登录都返回一样的信息
-                    //s生成jwt
-                    resback.send({error:null});
-                    db.close();
-                })
-            })
-        }).catch((err)=>{
-            console.log("error occured when accesing weixinserver");
-            resback.send({error:"访问微信api出现问题"});
-        })
-
-        // request(options, (err, res, body) => {
-        //     console.log(res.body+"\n"+err)
-        //     if (body) {
-        //         console.log(res.statusCode);
-        //         console.log(body);
-        //         var response = JSON.parse(body);
-        //         console.log(response.openid);
-        //         //拿到了微信个人id
-        //         MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
-        //             if(db_err) throw db_err;
-        //             var dbase = db.db("lucky");
-        //             console.log("db connected");
-
-        //             var col = dbase.collection("user");
-        //             col.find({id:response.openid}).toArray((find_err,find_result)=>{
-        //                 if(find_err)  throw find_err;
-        //                 if(find_result.length == 0){
-        //                     console.log("之前未登录的用户");
-        //                     //可增加更多的insert项
-        //                     col.insertOne({ id:response.openid },(insert_err,insert_result)=>{
-        //                         if(insert_err) throw insert_err;
-        //                         console.log("插入用户成功");
-        //                     })
-                            
-        //                 }else{
-        //                     console.log("用户存在，直接登录");
-        //                     console.log(find_result);
-                            
-        //                 }
-        //                 //不管几次登录都返回一样的信息
-        //                 //s生成jwt
-        //                 resback.send({error:null});
-        //                 db.close();
-        //             })
+        //             }
+        //             //不管几次登录都返回一样的信息
+        //             //s生成jwt
+        //             resback.send({error:null});
+        //             db.close();
         //         })
-
-        //     }else
-        //         console.log("error occured when accesing weixinserver");
-        //         resback.send({error:"访问微信api出现问题"});
-        //         //resback微信服务器问题
+        //     })
+        // }).catch((err)=>{
+        //     console.log("error occured when accesing weixinserver");
+        //     resback.send({error:"访问微信api出现问题"});
         // })
+
+        request(options, (err, res, body) => {
+            console.log(res.body+"\n"+err)
+            if (body) {
+                console.log(res.statusCode);
+                console.log(body);
+                var response = JSON.parse(body);
+                console.log(response.openid);
+                //拿到了微信个人id
+                return MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+                    if(db_err) throw db_err;
+                    var dbase = db.db("lucky");
+                    console.log("db connected");
+
+                    var col = dbase.collection("user");
+                    col.find({id:response.openid}).toArray((find_err,find_result)=>{
+                        if(find_err)  throw find_err;
+                        if(find_result.length == 0){
+                            console.log("之前未登录的用户");
+                            //可增加更多的insert项
+                            col.insertOne({ id:response.openid },(insert_err,insert_result)=>{
+                                if(insert_err) throw insert_err;
+                                console.log("插入用户成功");
+                            })
+                            
+                        }else{
+                            console.log("用户存在，直接登录");
+                            console.log(find_result);
+                            
+                        }
+                        //不管几次登录都返回一样的信息
+                        //s生成jwt
+                        resback.send({error:null});
+                        db.close();
+                    })
+                })
+
+            }else
+                console.log("error occured when accesing weixinserver");
+                resback.send({error:"访问微信api出现问题"});
+                //resback微信服务器问题
+        })
     }
 });
 
