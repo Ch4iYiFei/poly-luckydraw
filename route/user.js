@@ -5,7 +5,7 @@ var https = require("https");
 var qs = require("querystring");
 var request = require("request");
 
-router.post("/login", (req, res) => {
+router.post("/login", (req, resback) => {
     //   console.log(req.method+req.statusCode);
     console.log("/usr/login");
     console.log("body:"+req.body);
@@ -39,12 +39,12 @@ router.post("/login", (req, res) => {
                 console.log(body);
                 var response = JSON.parse(body);
                 console.log(response.openid);
-                res.send(response.openid);    
+                resback.send(response.openid);
             }else
-                res.send("error occured when accesing weixinserver");
+                console.log("error occured when accesing weixinserver");
         })
     }else
-        res.send("get no code from body");
+        console.log("no code get");
 });
 
 module.exports = router;
