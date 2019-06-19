@@ -4,6 +4,8 @@ var fs = require("fs");
 var https = require("https");
 var qs = require("querystring");
 var request = require("request");
+var MongoClient = require('mongodb').MongoClient;
+var db_url = 'mongodb://localhost:27017/runoob';
 
 router.post("/login", (req, resback) => {
     //   console.log(req.method+req.statusCode);
@@ -39,12 +41,37 @@ router.post("/login", (req, resback) => {
                 console.log(body);
                 var response = JSON.parse(body);
                 console.log(response.openid);
-                resback.send(response.openid);
+                //拿到了微信个人id
+                // MongoClient.connect(db_url,(db_err,db) => {
+                //     if(db_err) throw db_err;
+                //     var dbase = db.db("lucky");
+
+                // })
+
+
+
+
+
+
             }else
                 console.log("error occured when accesing weixinserver");
         })
-    }else
+        resback.send(response.openid);
+    }else{
         console.log("no code get");
+        MongoClient.connect(db_url,(db_err,db) => {
+            if(db_err) throw db_err;
+            console.log("database created");
+            var dbase = db.db("lucky");
+            console.log("db connected");
+            dbase.createCollection("user", function (err, res) {
+                if (err) throw err;
+                console.log("user collection created");
+                db.close();
+            });
+            
+        })
+    }
 });
 
 module.exports = router;
