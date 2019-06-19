@@ -35,7 +35,7 @@ router.post("/login", (req, resback) => {
         //     console.log(res.body);
         // })
 
-        new Promise((resolve,reject)=>{
+        return new Promise((resolve,reject)=>{
             console.log("start new promise");
             request(options, (err, res, body) => {
                 if(res)
