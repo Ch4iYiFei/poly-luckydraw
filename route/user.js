@@ -65,14 +65,14 @@ router.post("/login", (req, resback) => {
                         }
                         //不管几次登录都返回一样的信息
                         //s生成jwt
-                        resback.json({error:null});
+                        resback.send({error:null});
                         db.close();
                     })
                 })
 
             }else
                 console.log("error occured when accesing weixinserver");
-                resback.status(500).json({error:"访问微信api出现问题"});
+                //resback.status(500).json({error:"访问微信api出现问题"});
                 //resback微信服务器问题
         })
     }else{//测试使用
