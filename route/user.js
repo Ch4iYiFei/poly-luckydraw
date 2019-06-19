@@ -42,7 +42,7 @@ router.post("/login", (req, resback) => {
                 {
                     console.log("into resolve");
                     resolve(res);
-                }else if(err){
+                }else{
                     console.log("into reject");
                     reject(err);
                 }
