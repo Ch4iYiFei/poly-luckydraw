@@ -45,8 +45,14 @@ router.post("/login", (req, resback) => {
                 MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
                     if(db_err) throw db_err;
                     var dbase = db.db("lucky");
+                    console.log("db connected");
+
                     var col = dbase.collection("user");
-                    col.find()
+                    col.find({id:response.openid}).toArray((find_err,find_result)=>{
+                        if(find_err)  throw find_err;
+                        console.log(find_result);
+                        db.close();
+                    })
                 })
 
 
@@ -71,13 +77,25 @@ router.post("/login", (req, resback) => {
             //     db.close();
             // });
             var col = dbase.collection("user");
-            col.insertOne({ id:req.body.openid, address:"华中科技大学"},(insert_err,insert_result)=>{
-                if(insert_err) throw insert_err;
-                console.log(insert_result);
+
+            // col.insertOne({ id:req.body.openid, address:"华中科技大学", intro:"I am a student"},(insert_err,insert_result)=>{
+            //     if(insert_err) throw insert_err;
+            //     console.log(insert_result);
+            // })
+
+            col.find({id:req.body.openid}).toArray((find_err,find_result)=>{
+                if(find_err)  throw find_err;
+                console.log(find_result);
+                db.close();
+            })
+            col.find({id:"asdfhsadfasf"}).toArray((find_err,find_result)=>{
+                if(find_err)  throw find_err;
+                console.log(find_result);
+                db.close();
             })
             
-            
         })
+        resback.send("testing ok");
     }
 });
 
