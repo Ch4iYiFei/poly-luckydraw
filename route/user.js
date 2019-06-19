@@ -60,15 +60,22 @@ router.post("/login", (req, resback) => {
         resback.send(response.openid);
     }else{
         console.log("no code get");
+        console.log(req.body);
         MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
             if(db_err) throw db_err;
             var dbase = db.db("lucky");
             console.log("db connected");
-            dbase.createCollection("draw", function (err, res) {
-                if (err) throw err;
-                console.log("draw collection created");
-                db.close();
-            });
+            // dbase.createCollection("draw", function (err, res) {
+            //     if (err) throw err;
+            //     console.log("draw collection created");
+            //     db.close();
+            // });
+            var col = dbase.collection("user");
+            col.insertOne({ id:req.body.openid, address:"华中科技大学"},(insert_err,insert_result)=>{
+                if(insert_err) throw insert_err;
+                console.log(insert_result);
+            })
+            
             
         })
     }
