@@ -5,7 +5,7 @@ var https = require("https");
 var qs = require("querystring");
 var request = require("request");
 var MongoClient = require('mongodb').MongoClient;
-var db_url = 'mongodb://localhost:27017/runoob';
+const db_url = 'mongodb://localhost:27017/runoob';
 
 router.post("/login", (req, resback) => {
     //   console.log(req.method+req.statusCode);
@@ -50,27 +50,32 @@ router.post("/login", (req, resback) => {
                     var col = dbase.collection("user");
                     col.find({id:response.openid}).toArray((find_err,find_result)=>{
                         if(find_err)  throw find_err;
-                        if(!find_result){
-                            console.log("不存在该用户");
+                        if(find_result.length == 0){
+                            console.log("之前未登录的用户");
+                            //可增加更多的insert项
+                            col.insertOne({ id:response.openid },(insert_err,insert_result)=>{
+                                if(insert_err) throw insert_err;
+                                console.log("插入用户成功");
+                            })
+                            
                         }else{
                             console.log("用户存在，直接登录");
+                            console.log(find_result);
+                            
                         }
-
-
+                        //不管几次登录都返回一样的信息
+                        //s生成jwt
+                        resback.json({error:null});
                         db.close();
                     })
                 })
 
-
-
-
-
-
             }else
                 console.log("error occured when accesing weixinserver");
+                resback.status(500).json({error:"访问微信api出现问题"});
+                //resback微信服务器问题
         })
-        //resback.send(response.openid);//response需要处理
-    }else{
+    }else{//测试使用
         console.log("no code get");
         console.log(req.body);
         MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
@@ -91,7 +96,7 @@ router.post("/login", (req, resback) => {
 
             col.find({id:req.body.openid}).toArray((find_err,find_result)=>{
                 if(find_err)  throw find_err;
-                if(!find_result){
+                if(find_result.length == 0){
                     console.log("不存在该用户");
                 }else{
                     console.log("用户存在，直接登录");
