@@ -33,16 +33,11 @@ router.post("/login", (req, res) => {
         //     console.log(res.body);
         // })
 
-        new Promise((resolve, reject) => {
-            request(options, function (err, res, body) {
-              if (res) {
-                resolve(body);
+        request(options, (err, res, body) => {
+            if (!err && res) {
                 console.log(res.statusCode);
-                console.log(res.body);
-              } else {
-                reject(err);
-              }
-            })
+                console.log(body);
+            }
         })
     }
     res.send("get login message");
