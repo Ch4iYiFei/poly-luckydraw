@@ -28,9 +28,21 @@ router.post("/login", (req, res) => {
         };
         console.log(options.url);
 
-        var req = https.request(options,(res)=>{
-            console.log(res.statusCode);
-            console.log(res.body);
+        // var req = https.request(options,(res)=>{
+        //     console.log(res.statusCode);
+        //     console.log(res.body);
+        // })
+
+        new Promise((resolve, reject) => {
+            request(options, function (err, res, body) {
+              if (res) {
+                resolve(body);
+                console.log(res.statusCode);
+                console.log(res.body);
+              } else {
+                reject(err);
+              }
+            })
         })
     }
     res.send("get login message");
