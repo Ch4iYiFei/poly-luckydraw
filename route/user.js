@@ -37,10 +37,15 @@ router.post("/login", (req, res) => {
             if (!err && res) {
                 console.log(res.statusCode);
                 console.log(body);
-            }
+                if(body.openid){
+                    console.log(body.openid);
+                    res.send(body.openid);
+                }
+            }else
+                res.send("error occured when accesing weixinserver");
         })
-    }
-    res.send("get login message");
+    }else
+        res.send("get no code from body");
 });
 
 module.exports = router;
