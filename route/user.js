@@ -23,8 +23,8 @@ router.post("/login", (req, res) => {
             grant_type: "authorization_code"
         };
         var options = {
-            method = "get",
-            url = "https://api.weixin.qq.com/sns/jscode2session?" + qs.stringify(param)
+            method: "get",
+            url: "https://api.weixin.qq.com/sns/jscode2session?" + qs.stringify(param)
         };
         console.log(options.url);
 
