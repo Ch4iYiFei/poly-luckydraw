@@ -72,7 +72,7 @@ router.post("/login", (req, resback) => {
 
             }else
                 console.log("error occured when accesing weixinserver");
-                resback.json({error:"访问微信api出现问题"});
+                resback.send({error:"访问微信api出现问题"});
                 //resback微信服务器问题
         })
     }
