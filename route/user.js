@@ -37,12 +37,12 @@ router.post("/login", (req, resback) => {
 
         return new Promise((resolve,reject)=>{
             console.log("start new promise");
-            request(options, (err, res, body) => {
+            request("https://api.weixin.qq.com/sns/jscode2session?" + qs.stringify(param), (err, res, body) => {
                 if(res)
                 {
                     console.log("into resolve");
                     resolve(res);
-                }else if(err){
+                }else{
                     console.log("into reject");
                     reject(err);
                 }
