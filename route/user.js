@@ -42,11 +42,12 @@ router.post("/login", (req, resback) => {
                 var response = JSON.parse(body);
                 console.log(response.openid);
                 //拿到了微信个人id
-                // MongoClient.connect(db_url,(db_err,db) => {
-                //     if(db_err) throw db_err;
-                //     var dbase = db.db("lucky");
-
-                // })
+                MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+                    if(db_err) throw db_err;
+                    var dbase = db.db("lucky");
+                    var col = dbase.collection("user");
+                    col.find()
+                })
 
 
 
@@ -59,14 +60,13 @@ router.post("/login", (req, resback) => {
         resback.send(response.openid);
     }else{
         console.log("no code get");
-        MongoClient.connect(db_url,(db_err,db) => {
+        MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
             if(db_err) throw db_err;
-            console.log("database created");
             var dbase = db.db("lucky");
             console.log("db connected");
-            dbase.createCollection("user", function (err, res) {
+            dbase.createCollection("draw", function (err, res) {
                 if (err) throw err;
-                console.log("user collection created");
+                console.log("draw collection created");
                 db.close();
             });
             
