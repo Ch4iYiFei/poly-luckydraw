@@ -5,8 +5,7 @@ var https = require("https");
 var qs = require("querystring");
 var request = require("request");
 var MongoClient = require('mongodb').MongoClient;
-//const db_url = 'mongodb://gigs.leeg4ng:27017/runoob';
-const db_url = 'mongodb://localhost:27017/runoob';
+const db_url = 'mongodb://127.0.0.1:27017';
 
 router.post("/login", (req, resback) => {
     //   console.log(req.method+req.statusCode);
