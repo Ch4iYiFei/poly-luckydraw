@@ -20,5 +20,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 
 var userRouter = require("./route/user");
+var drawRouter = require("./route/draw");
 
 app.use('/user',userRouter);
+app.use('/draw',drawRouter);

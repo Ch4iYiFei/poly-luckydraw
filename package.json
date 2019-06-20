@@ -14,7 +14,9 @@
     "express-generator": "^4.16.1",
     "jwt-simple": "^0.5.6",
     "mongodb": "^3.2.7",
+    "multer": "^1.4.1",
     "pm2": "^3.5.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "uuid": "^3.3.2"
   }
 }
