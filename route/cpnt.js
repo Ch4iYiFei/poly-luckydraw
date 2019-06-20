@@ -15,30 +15,16 @@ var storage = multer.diskStorage({
         cb(null, './upload');
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + uuidv1() + '.' + req.file.mimetype);
+        cb(null, file.fieldname + '-' + uuidv1());
     }
 });
 var upload = multer({storage: storage});
 
 router.post("/publish", upload.single("draw"), (req, resback) => {
     console.log("/draw/publish");
-    var file = req.file;
     console.log(req.file);
-    console.log(req.body);
     
-    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
-        if(db_err) throw db_err;
-        var dbase = db.db("lucky");
-        console.log("db connected");
-
-        var col = dbase.collection("draw");
-        console.log("文件类型",file.mimetype);
-        console.log("文件保存路径", file.path);
-        console.log("文件名称",file.filename);
-        
-        var object = {name: file.filename, type: file.mimetype, };
-        //col.insertOne()
-    });
+   
 });
 
 

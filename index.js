@@ -22,6 +22,9 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 
 var userRouter = require("./route/user");
 var drawRouter = require("./route/draw");
+var cpntRouter = require("./route/cpnt");
 
 app.use('/user',userRouter);
 app.use('/draw',drawRouter);
+app.use('/cpnt',cpntRouter);
+app.use('/img',express.static("upload"));
