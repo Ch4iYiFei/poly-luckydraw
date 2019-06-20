@@ -23,6 +23,7 @@ var upload = multer({storage: storage});
 router.post("/publish", upload.single("draw"), (req, resback) => {
     console.log("/draw/publish");
     console.log(req.file);
+    
 });
 
 
