@@ -24,3 +24,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {
     console.log("/draw/publish");
     console.log(req.file);
 });
+
+
+
+module.exports = router;
