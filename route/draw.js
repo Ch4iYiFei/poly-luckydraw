@@ -19,12 +19,12 @@ var storage = multer.diskStorage({
     filename: function (req, file, cb) {
         console.log(file.originalname);
         var suffix = (file.originalname).split(".");
-        cb(null, file.fieldname + '-' + uuidv1() + '.' + suffix[suffix.length -1]);
+        cb(null, 'img-' + uuidv1() + '.' + suffix[suffix.length -1]);
     }
 });
 var upload = multer({storage: storage});
 
-router.post("/publish", upload.single("draw"), (req, resback) => {
+router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field，并没使用fieldname
     console.log("/draw/publish");
     var file = req.file;
     //console.log(req.file);
@@ -44,11 +44,12 @@ router.post("/publish", upload.single("draw"), (req, resback) => {
         console.log(req.body.time);
         console.log(req.body.date);
 
+        var draw_id = 'draw-' + uuidv1();
         var token = req.body.jwt;
         var publisher = jwt.decode(token,secret).iss;
         console.log("发布者",publisher);
         
-        var object = {path: file.path, publisher:publisher, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time};
+        var object = {draw_id: draw_id, path: file.path, publisher:publisher, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time};
         console.log(object);
         col.insertOne(object, (insert_err,insert_result)=>{
             if(insert_err) throw insert_err;
