@@ -61,6 +61,29 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
     });
 });
 
+router.post("/fetch/publish", (req,resback)=>{
+    console.log("/draw/fetch/publish");
+    console.log(req.body);
+    var token = req.body.jwt;
+    var publisher = jwt.decode(token,secret).iss;
+    //已经拥有的抽奖信息数量
+    var skipnum = req.body.num;
+    var limitnum = 3;
+    console.log("发布者",publisher);
 
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky");
+        console.log("db connected");
+
+        var col = dbase.collection("draw");
+        col.find({publisher: publisher}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
+            if(find_err)  throw find_err;
+            resback.send(find_result);
+            db.close();
+        });
+    });
+
+})
 
 module.exports = router;
