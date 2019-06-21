@@ -44,7 +44,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {
         console.log(res.body.time);
         console.log(res.body.date);
         
-        var object = {path: file.path, ,};
+        //var object = {path: file.path, des,};
         //col.insertOne()
     });
 });
