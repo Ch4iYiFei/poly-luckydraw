@@ -39,12 +39,13 @@ router.post("/publish", upload.single("draw"), (req, resback) => {
         console.log("文件名称",file.filename);
 
 
-        console.log(res.body.award);
-        console.log(res.body.desc);
-        console.log(res.body.time);
-        console.log(res.body.date);
+        console.log(req.body.award);
+        console.log(req.body.desc);
+        console.log(req.body.time);
+        console.log(req.body.date);
         
-        //var object = {path: file.path, des,};
+        var object = {path: file.path, desc: req.body.desc, award: req.body.award, date:req.body.date, time: req.body.time};
+        console.log(object);
         //col.insertOne()
     });
 });
