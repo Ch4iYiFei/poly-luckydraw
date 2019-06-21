@@ -45,7 +45,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {
         console.log(req.body.date);
 
         var token = req.body.jwt;
-        var publisher = jwt.decode(token,secret);
+        var publisher = jwt.decode(token,secret).iss;
         console.log("发布者",publisher);
         
         var object = {path: file.path, publisher:publisher, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time};
