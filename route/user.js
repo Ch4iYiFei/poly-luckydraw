@@ -65,6 +65,7 @@ router.post("/login", (req, resback) => {
                         //不管几次登录都返回一样的信息
                         //s生成jwt
                         var token = jwt.encode({iss: response.openid}, secret);
+                        console.log("jwt:",token);
                         resback.send({error:null, jwt:token});
                         db.close();
                     })

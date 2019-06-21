@@ -8,6 +8,8 @@ var MongoClient = require('mongodb').MongoClient;
 // const db_url = 'mongodb://103.209.102.252:27017/lucky';
 const db_url = 'mongodb://127.0.0.1:27017/lucky';
 var uuidv1 = require("uuid/v1");
+var jwt = require("jwt-simple");
+var secret = "photopp";
 
 var multer = require("multer");
 var storage = multer.diskStorage({
@@ -37,18 +39,21 @@ router.post("/publish", upload.single("draw"), (req, resback) => {
         console.log("文件类型",file.mimetype);
         console.log("文件保存路径", file.path);
         console.log("文件名称",file.filename);
-
-
         console.log(req.body.award);
         console.log(req.body.desc);
         console.log(req.body.time);
         console.log(req.body.date);
+
+        var token = req.body.jwt;
+        var publisher = jwt.decode(token,secret);
+        console.log("发布者",publisher);
         
-        var object = {path: file.path, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time};
+        var object = {path: file.path, publisher:publisher, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time};
         console.log(object);
         col.insertOne(object, (insert_err,insert_result)=>{
             if(insert_err) throw insert_err;
             console.log("插入抽奖成功");
+            //...........
             resback.send({error: null});
             db.close();
         })
