@@ -43,13 +43,14 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
         console.log(req.body.desc);
         console.log(req.body.time);
         console.log(req.body.date);
+        console.log(req.body.isPublic);
 
         var draw_id = 'draw-' + uuidv1();
         var token = req.body.jwt;
         var publisher = jwt.decode(token,secret).iss;
         console.log("发布者",publisher);
         
-        var object = {draw_id: draw_id, path: file.path, publisher:publisher, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time};
+        var object = {draw_id: draw_id, path: file.path, publisher:publisher, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time, isPublic:req.body.isPublic};
         console.log(object);
         col.insertOne(object, (insert_err,insert_result)=>{
             if(insert_err) throw insert_err;
@@ -77,6 +78,7 @@ router.post("/fetch/publish", (req,resback)=>{
         console.log("db connected");
 
         var col = dbase.collection("draw");
+        //isPublic对发布者不是限制
         col.find({publisher: publisher}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
             if(find_err)  throw find_err;
             console.log(find_result);
@@ -85,6 +87,8 @@ router.post("/fetch/publish", (req,resback)=>{
         });
     });
 
-})
+});
+
+
 
 module.exports = router;
