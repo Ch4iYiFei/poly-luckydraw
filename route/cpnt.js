@@ -22,7 +22,7 @@ var upload = multer({storage: storage});
 
 router.post("/upload", upload.single("img"), (req, resback) => {
     console.log("/cpnt/upload");
-    resback.send({status: 1, error: null});
+    resback.send({error: null});
 });
 
 

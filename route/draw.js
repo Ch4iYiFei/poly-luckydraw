@@ -25,8 +25,8 @@ var upload = multer({storage: storage});
 router.post("/publish", upload.single("draw"), (req, resback) => {
     console.log("/draw/publish");
     var file = req.file;
-    console.log(req.file);
-    console.log(req.body);
+    //console.log(req.file);
+    //console.log(req.body);
     
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
         if(db_err) throw db_err;
@@ -44,7 +44,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {
         console.log(req.body.time);
         console.log(req.body.date);
         
-        var object = {path: file.path, desc: req.body.desc, award: req.body.award, date:req.body.date, time: req.body.time};
+        var object = {path: file.path, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time};
         console.log(object);
         col.insertOne(object, (insert_err,insert_result)=>{
             if(insert_err) throw insert_err;

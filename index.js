@@ -28,3 +28,4 @@ app.use('/user',userRouter);
 app.use('/draw',drawRouter);
 app.use('/cpnt',cpntRouter);
 app.use('/img',express.static("upload"));
+app.use('/src',express.static("cpnt"));
