@@ -12,19 +12,17 @@ var uuidv1 = require("uuid/v1");
 var multer = require("multer");
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './upload');
+        cb(null, './cpnt');
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + uuidv1());
+        cb(null, file.originalname);
     }
 });
 var upload = multer({storage: storage});
 
-router.post("/publish", upload.single("draw"), (req, resback) => {
-    console.log("/draw/publish");
-    console.log(req.file);
-    
-   
+router.post("/upload", upload.single("img"), (req, resback) => {
+    console.log("/cpnt/upload");
+    resback.send({status: 1, error: null});
 });
 
 

@@ -15,10 +15,9 @@ var storage = multer.diskStorage({
         cb(null, './upload');
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + uuidv1());
         console.log(file.originalname);
-        console.log(req.body);
-        console.log(req.file);
+        var suffix = (file.originalname).split(".");
+        cb(null, file.fieldname + '-' + uuidv1() + '.' + suffix[suffix.length -1]);
     }
 });
 var upload = multer({storage: storage});
@@ -38,8 +37,14 @@ router.post("/publish", upload.single("draw"), (req, resback) => {
         console.log("文件类型",file.mimetype);
         console.log("文件保存路径", file.path);
         console.log("文件名称",file.filename);
+
+
+        console.log(res.body.award);
+        console.log(res.body.desc);
+        console.log(res.body.time);
+        console.log(res.body.date);
         
-        var object = {name: file.filename, type: file.mimetype, };
+        var object = {path: file.path, ,};
         //col.insertOne()
     });
 });
