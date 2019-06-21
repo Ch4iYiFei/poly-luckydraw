@@ -79,6 +79,7 @@ router.post("/fetch/publish", (req,resback)=>{
         var col = dbase.collection("draw");
         col.find({publisher: publisher}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
             if(find_err)  throw find_err;
+            console.log(find_result);
             resback.send(find_result);
             db.close();
         });
