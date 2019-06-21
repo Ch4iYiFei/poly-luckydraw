@@ -106,7 +106,7 @@ router.post("/fetch/all", (req,resback)=>{
 
         var col = dbase.collection("draw");
         //isPublic对所有用户来说是选择条件
-        col.find({isPublic: true}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
+        col.find({isPublic: "true"}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
             if(find_err)  throw find_err;
             console.log(find_result);
             resback.send(find_result);
