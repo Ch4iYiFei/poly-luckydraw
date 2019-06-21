@@ -7,6 +7,8 @@ var request = require("request");
 var MongoClient = require('mongodb').MongoClient;
 // const db_url = 'mongodb://103.209.102.252:27017/lucky';
 const db_url = 'mongodb://127.0.0.1:27017/lucky';
+var jwt = require("jwt-simple");
+var secret = "photopp";
 
 router.post("/login", (req, resback) => {
     //   console.log(req.method+req.statusCode);
@@ -62,7 +64,8 @@ router.post("/login", (req, resback) => {
                         }
                         //不管几次登录都返回一样的信息
                         //s生成jwt
-                        resback.send({error:null});
+                        var token = jwt.encode({iss: response.openid}, secret);
+                        resback.send({error:null, jwt:token});
                         db.close();
                     })
                 })

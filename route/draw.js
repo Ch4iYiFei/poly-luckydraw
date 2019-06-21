@@ -49,6 +49,8 @@ router.post("/publish", upload.single("draw"), (req, resback) => {
         col.insertOne(object, (insert_err,insert_result)=>{
             if(insert_err) throw insert_err;
             console.log("插入抽奖成功");
+            resback.send({error: null});
+            db.close();
         })
     });
 });
