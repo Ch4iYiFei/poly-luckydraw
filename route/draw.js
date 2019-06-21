@@ -68,7 +68,7 @@ router.post("/fetch/publish", (req,resback)=>{
     var publisher = jwt.decode(token,secret).iss;
     //已经拥有的抽奖信息数量
     var skipnum = req.body.num;
-    var limitnum = 3;
+    var limitnum = 10;
     console.log("发布者",publisher);
 
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
