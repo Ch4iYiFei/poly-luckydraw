@@ -89,8 +89,8 @@ router.post("/fetch/publish", (req,resback)=>{
 
 });
 
-router.post("/fetch/all", (req,resback)=>{
-    console.log("/draw/fetch/all");
+router.post("/fetch/public", (req,resback)=>{
+    console.log("/draw/fetch/public");
     console.log(req.body);
     var token = req.body.jwt;
     var publisher = jwt.decode(token,secret).iss;
@@ -106,6 +106,7 @@ router.post("/fetch/all", (req,resback)=>{
 
         var col = dbase.collection("draw");
         //isPublic对所有用户来说是选择条件
+        //此处的true可能对与引号有问题
         col.find({isPublic: "true"}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
             if(find_err)  throw find_err;
             console.log(find_result);
