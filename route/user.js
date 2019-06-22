@@ -48,6 +48,7 @@ router.post("/login", (req, resback) => {
                     console.log("db connected");
 
                     var col = dbase.collection("user");
+                    //此处可以不用find，直接upsert
                     col.find({id:response.openid}).toArray((find_err,find_result)=>{
                         if(find_err)  throw find_err;
                         if(find_result.length == 0){
