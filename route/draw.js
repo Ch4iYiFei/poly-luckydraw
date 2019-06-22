@@ -150,14 +150,14 @@ router.post("/join", (req,resback)=>{
         //     db.close();
         // });
 
-        col.find({draw_id: req.body.draw_id}).toArray((find_err,find_result)=>{
+        col.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
             if(find_err) throw find_err;
             console.log(find_result);
             console.log(find_result.draw_id);
             console.log(find_result.joiner);
             resback.send(find_result.joiner);
             db.close();
-        });
+        })
         
     });
 });
