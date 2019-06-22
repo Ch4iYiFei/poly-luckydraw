@@ -46,7 +46,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
         console.log(req.body.isPublic);
         var pub = req.body.isPublic;
         console.log(pub.toString());
-        console.log(pub.valueOf());
+        console.log(new Boolean(pub).valueOf());
 
 
         var draw_id = 'draw-' + uuidv1();
