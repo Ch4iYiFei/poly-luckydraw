@@ -81,6 +81,7 @@ router.post("/fetch/publish", (req,resback)=>{
         var dbase = db.db("lucky");
         console.log("db connected");
 
+
         var col = dbase.collection("draw");
         //isPublic对发布者不是限制
         col.find({publisher: publisher}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
@@ -111,6 +112,8 @@ router.post("/fetch/public", (req,resback)=>{
         var col = dbase.collection("draw");
         //isPublic对所有用户来说是选择条件
         //此处的true可能对与引号有问题
+        //优化排序的问题
+        //优化一直fetch的问题
         col.find({isPublic: "true"}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
             if(find_err)  throw find_err;
             console.log(find_result);
@@ -136,13 +139,14 @@ router.post("/join", (req,resback)=>{
         var col = dbase.collection("joiner");
 
         var object = {draw_id: req.body.draw_id, joiner: joiner};
-        col.insertOne(object, (insert_err,insert_result)=>{
-            if(insert_err) throw insert_err;
-            console.log("用户参与成功");
-            //...........
-            resback.send({error: null});
-            db.close();
-        })
+        col.updateOne
+        // col.insertOne(object, (insert_err,insert_result)=>{
+        //     if(insert_err) throw insert_err;
+        //     console.log("用户参与成功");
+        //     //...........
+        //     resback.send({error: null});
+        //     db.close();
+        // });
     });
 });
 

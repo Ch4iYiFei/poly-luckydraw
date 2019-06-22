@@ -66,7 +66,7 @@ router.post("/login", (req, resback) => {
                         //s生成jwt
                         var token = jwt.encode({iss: response.openid}, secret);
                         console.log("jwt:",token);
-                        resback.send({error:null, jwt:token});
+                        resback.send({error:null, jwt:token, uid:response.openid});
                         db.close();
                     })
                 })
