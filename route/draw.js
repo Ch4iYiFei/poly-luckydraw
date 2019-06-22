@@ -140,21 +140,22 @@ router.post("/join", (req,resback)=>{
 
         //var object = {draw_id: req.body.draw_id, joiner: joiner};
         
-        // col.insertOne({draw_id: req.body.draw_id}, (insert_err,insert_result)=>{
-        //     if(insert_err) throw insert_err;
-        //     console.log("用户参与成功");
-        //     //...........
-        //     resback.send({error: null});
-        //     db.close();
-        // });
-
-        col.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiner: joiner}},(insert_err,insert_result)=>{
+        col.insertOne({draw_id: req.body.draw_id}, (insert_err,insert_result)=>{
             if(insert_err) throw insert_err;
             console.log("用户参与成功");
             //...........
-            resback.send({error: null});
-            db.close();
+            col.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiner: joiner}},(insert_err,insert_result)=>{
+                if(insert_err) throw insert_err;
+                console.log("用户参与成功");
+                //...........
+                resback.send({error: null});
+                db.close();
+            });
+            //resback.send({error: null});
+            //db.close();
         });
+
+        
     });
 });
 
