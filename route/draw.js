@@ -73,7 +73,7 @@ router.post("/fetch/publish", (req,resback)=>{
     var publisher = jwt.decode(token,secret).iss;
     //已经拥有的抽奖信息数量
     var skipnum = req.body.num;
-    var limitnum = 10;
+    var limitnum = 2;
     console.log("发布者",publisher);
 
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
@@ -100,7 +100,7 @@ router.post("/fetch/public", (req,resback)=>{
     var publisher = jwt.decode(token,secret).iss;
     //已经拥有的抽奖信息数量
     var skipnum = req.body.num;
-    var limitnum = 10;
+    var limitnum = 2;
     console.log("发布者",publisher);
 
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
