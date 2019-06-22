@@ -43,14 +43,14 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
         console.log(req.body.desc);
         console.log(req.body.time);
         console.log(req.body.date);
-        console.log(req.body.isPublic);
+        console.log(req.body.isPublic.toString());
 
         var draw_id = 'draw-' + uuidv1();
         var token = req.body.jwt;
         var publisher = jwt.decode(token,secret).iss;
         console.log("发布者",publisher);
         
-        var object = {draw_id: draw_id, name: file.filename, publisher:publisher, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time, isPublic:req.body.isPublic};
+        var object = {draw_id: draw_id, name: file.filename, publisher:publisher, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time, isPublic:req.body.isPublic.toString()};
         console.log(object);
         col.insertOne(object, (insert_err,insert_result)=>{
             if(insert_err) throw insert_err;
