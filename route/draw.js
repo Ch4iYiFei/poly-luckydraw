@@ -136,30 +136,33 @@ router.post("/join", (req,resback)=>{
         var dbase = db.db("lucky");
         console.log("db connected");
         
-        var col = dbase.collection("joiner");
-
-        //var object = {draw_id: req.body.draw_id, joiner: joiner};
+        var col_draw = dbase.collection("draw");
+        var col_user = dbase.collection("user");
 
         //addToSet不会添加重复的joiner,
-        //upsert在找不到drawid时insert，找不到时update
-        // col.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiner: joiner}},{upsert: true}, (insert_err,insert_result)=>{
-        //     if(insert_err) throw insert_err;
-        //     console.log("用户参与成功");
-        //     //...........
-        //     resback.send({error: null});
-        //     db.close();
-        // });
-
+        //upsert在找不到drawid时insert，找不到时update,但是这种情况不可能发送
+        col_draw.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiners: joiner}}, (insert_err,insert_result)=>{
+            if(insert_err) throw insert_err;
+            console.log("抽奖中更新用户成功");
+            //...........
+            col_user.updateOne({id: joiner},{$addToSet:{draws: req.body.draw_id}}, (insert_err,insert_result)=>{
+                if(insert_err) throw insert_err;
+                console.log("用户中更新抽奖成功");
+                //...........
+                resback.send({error: null});
+                db.close();
+            });
+        });
 
         //一般find需要通过Toarray，findOne不需要
-        col.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
-            if(find_err) throw find_err;
-            console.log(find_result);
-            console.log(find_result.draw_id);
-            console.log(find_result.joiner);
-            resback.send(find_result.joiner);
-            db.close();
-        })
+        // col.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
+        //     if(find_err) throw find_err;
+        //     console.log(find_result);
+        //     console.log(find_result.draw_id);
+        //     console.log(find_result.joiners);
+        //     resback.send(find_result.joiners);
+        //     db.close();
+        // })
         
     });
 });
