@@ -110,11 +110,25 @@ router.post("/fetch/public", (req,resback)=>{
         col.find({isPublic: "true"}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
             if(find_err)  throw find_err;
             console.log(find_result);
-            resback.send(find_result);
+            resback.send({arr: find_result});
             db.close();
         });
     });
 
+});
+
+router.post("/join", (req,resback)=>{
+    console.log("/draw/join");
+    console.log(req.body);
+    var token = req.body.jwt;
+    var publisher = jwt.decode(token,secret).iss;
+    console.log("发布者",publisher);
+
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+        if(db_err)
+            throw db_err
+         
+    });
 });
 
 module.exports = router;
