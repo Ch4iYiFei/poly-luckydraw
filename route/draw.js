@@ -140,14 +140,22 @@ router.post("/join", (req,resback)=>{
 
         //var object = {draw_id: req.body.draw_id, joiner: joiner};
 
-        //addToSet不会添加重复的joiner
-        col.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiner: joiner}},{upsert: true}, (insert_err,insert_result)=>{
-            if(insert_err) throw insert_err;
-            console.log("用户参与成功");
-            //...........
-            resback.send({error: null});
-            db.close();
-        });
+        //addToSet不会添加重复的joiner,
+        //upsert在找不到drawid时insert，找不到时update
+        // col.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiner: joiner}},{upsert: true}, (insert_err,insert_result)=>{
+        //     if(insert_err) throw insert_err;
+        //     console.log("用户参与成功");
+        //     //...........
+        //     resback.send({error: null});
+        //     db.close();
+        // });
+
+        col.find({draw_id: req.body.draw_id}, (find_err,find_result)=>{
+            if(find_err) throw find_err;
+            console.log(find_result);
+            console.log(find_result.draw_id);
+            console.log(find_result.joiner);
+        })
         
     });
 });
