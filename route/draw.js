@@ -155,6 +155,8 @@ router.post("/join", (req,resback)=>{
             console.log(find_result);
             console.log(find_result.draw_id);
             console.log(find_result.joiner);
+            resback.send(find_result.joiner);
+            db.close();
         })
         
     });
