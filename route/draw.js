@@ -150,6 +150,8 @@ router.post("/join", (req,resback)=>{
         //     db.close();
         // });
 
+
+        //一般find需要通过Toarray，findOne不需要
         col.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
             if(find_err) throw find_err;
             console.log(find_result);
