@@ -125,8 +125,8 @@ router.post("/join", (req,resback)=>{
     console.log("/draw/join");
     console.log(req.body);
     var token = req.body.jwt;
-    var publisher = jwt.decode(token,secret).iss;
-    console.log("发布者",publisher);
+    var joiner = jwt.decode(token,secret).iss;
+    console.log("参与者",joiner);
 
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
         if(db_err) throw db_err;
@@ -135,6 +135,8 @@ router.post("/join", (req,resback)=>{
         
         var col = dbase.collection("joiner");
 
+        var object = {draw_id: req.body.draw_id, joiner: joiner}
+        //col.insertOne
     });
 });
 
