@@ -15,7 +15,8 @@ https.createServer({
 	console.log("run on 8086 changed");
 });
 
-var date = new Date(2019, 5, 24, 20, 0, 0);
+// var date = new Date(2019, 5, 24, 20, 0, 0);
+var date = new Date();
 console.log(date.getTimezoneOffset());
 console.log(date.toLocaleTimeString());
 // var date2 = new Date()
