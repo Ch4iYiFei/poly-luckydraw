@@ -342,10 +342,15 @@ router.get("/test",(req,resback)=>{
     //messageSend("draw-34050ce0-94d2-11e9-b85e-f7377ee955d8");
 
     var draw_id = "draw-34050ce0-94d2-11e9-b85e-f7377ee955d8";
-    agenda.define(draw_id,{ priority: 'high', concurrency: 3 },(job,done)=>{
-        getAllId(draw_id)
-        .then(()=>done())
-        .catch((err)=>{throw err});
+    // agenda.define(draw_id,{ priority: 'high', concurrency: 3 },(job,done)=>{
+    //     getAllId(draw_id)
+    //     .then(()=>done())
+    //     .catch((err)=>{throw err});
+    // })
+
+    agenda.define(draw_id,(job,done)=>{
+        console.log("fuck this shit");
+        done();
     })
 
     //agenda.every("30 seconds",draw_id);
@@ -361,7 +366,7 @@ router.get("/test",(req,resback)=>{
     //     agenda.start();
     // })
 
-    agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
+    agenda.schedule('0 10 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
     agenda.start();
 
 
