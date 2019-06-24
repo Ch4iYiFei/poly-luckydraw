@@ -56,54 +56,61 @@ async function messageSend(draw_id){
     //其实感觉下面两个await可以并发，但是不知道怎么写
     var ids = await getAllId(draw_id).catch((err)=>{
         throw err;
-    })
-    var body = await getToken().catch((err)=>{
+    });
+    var info = await getDrawInfo(draw_id).catch((err)=>{
         throw err;
     });
-    
-    //处理没有抽奖着的问题
-    ids.forEach(element => {
-        console.log("element:",element);
-        console.log("element.ID",element.id);
-        console.log("element.formId",element.formId);
+    var body = await getToken().catch((err)=>{
+        throw err;
     });
 
     console.log(body);
     var response = JSON.parse(body);
     console.log(response.access_token);
 
-    var messageData = {
-        "touser": "OPENID",
-        "template_id": "TEMPLATE_ID",
-        "page": "index",
-        "form_id": "FORMID",
-        "data": {
-            "keyword1": {
-                "value": "339208499"
+    //处理没有抽奖着的问题
+    ids.forEach(element => {
+        //console.log("element:",element);
+        //console.log("element.ID",element.id);
+        //console.log("element.formId",element.formId);
+        console.log("开始发送消息");
+        var messageData = {
+            "touser": element.id,
+            "template_id": "_jZtBpX7u2NlIi6y-f8bCttH-75A2Ix2IEd3QthfzKE",
+            //"page": "pages/detail/detail?",
+            "form_id": element.formId,
+            "data": {
+                "keyword1": {
+                    "value": info.award
+                },
+                "keyword2": {
+                    "value": "点击进入查看抽奖结果"
+                },
+                "keyword3": {
+                    "value": "此处为抽奖提醒"
+                }
             },
-            "keyword2": {
-                "value": "2015年01月05日 12:30"
+            "emphasis_keyword": "keyword2.DATA"
+        }
+
+        var options = {
+            method: "POST",
+            url: "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token="+response.access_token,
+            json: true,
+            headers: {
+                "content-type": "application/json",
             },
-            "keyword3": {
-                "value": "腾讯微信总部"
-            } ,
-            "keyword4": {
-                "value": "广州市海珠区新港中路397号"
-            }
-        },
-        "emphasis_keyword": "keyword1.DATA"
-    }
-      
+            body: messageData,
+        };
+        
+        request(options,(err, res, body)=>{
+            console.log("应该已经发送了模版消息");
+            console.log(res.body);
+        })
     
-    // var options = {
-    //     method: "POST",
-    //     url: "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token="+response.access_token,
-    //     json: true,
-    //     headers: {
-    //         "content-type": "application/json",
-    //     },
-    //     body: 
-    // };
+    });
+
+    
 }
 
 async function getToken(){
@@ -154,7 +161,27 @@ async function getAllId(draw_id){
             })
         });
     });
-    
+}
+
+async function getDrawInfo(draw_id){
+    return new Promise((resolve,reject)=>{
+        console.log("去数据库获得这个draw的一些信息");
+        //查询优化，可以只查询某个参数
+        MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+            if(db_err) reject(db_err);
+            console.log("into resolve");
+            var dbase = db.db("lucky");
+            console.log("db connected");
+            var col = dbase.collection("draw");
+
+            col.findOne({draw_id: draw_id},(find_err,find_result)=>{
+                if(find_err) reject(find_err);
+                console.log(find_result);
+                resolve(find_result);
+                db.close();
+            })
+        });
+    });
 }
 
 router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field，并没使用fieldname
