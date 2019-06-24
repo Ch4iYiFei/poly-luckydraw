@@ -343,15 +343,14 @@ router.get("/test",(req,resback)=>{
 
     var draw_id = "draw-34050ce0-94d2-11e9-b85e-f7377ee955d8";
     agenda.define(draw_id,{ priority: 'high', concurrency: 3 },(job,done)=>{
-        getAllId(draw_id)
-        .then(()=>done())
-        .catch((err)=>{throw err});
+        getAllId(draw_id,done);
     })
 
     //agenda.every("30 seconds",draw_id);
     (async function() {
-        await agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
         await agenda.start();
+        await agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
+        
       })();
 
     // agenda.on('ready',()=>{
