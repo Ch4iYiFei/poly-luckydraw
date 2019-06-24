@@ -56,6 +56,7 @@ async function messageSend(){
     var body = await getToken();
     console.log(body);
     var access_token = body.access_token;
+   // JSON.parse
     console.log(access_token);
 }
 
@@ -97,16 +98,16 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
     //console.log(req.body);
     var draw_id = 'draw-' + uuidv1();
 
-    agenda.define(draw_id, (job,done) => {
-        console.log("正在使用agenda");
-        done();
-    });
+    // agenda.define(draw_id, (job,done) => {
+    //     console.log("正在使用agenda");
+    //     done();
+    // });
 
 
-    (async function() {
-        await agenda.start();
-        await agenda.schedule("*/3 * * * *",draw_id);
-    })();
+    // (async function() {
+    //     await agenda.start();
+    //     await agenda.schedule("*/3 * * * *",draw_id);
+    // })();
 
     
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
