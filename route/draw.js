@@ -10,6 +10,7 @@ const db_url = 'mongodb://127.0.0.1:27017/lucky';
 var uuidv1 = require("uuid/v1");
 var jwt = require("jwt-simple");
 var secret = "photopp";
+var schedule = require("node-schedule");
 
 var multer = require("multer");
 var storage = multer.diskStorage({
@@ -313,8 +314,13 @@ router.post("/join", (req,resback)=>{
 router.get("/test",(req,resback)=>{
     console.log("/draw/test");
     var draw_id = "draw-34050ce0-94d2-11e9-b85e-f7377ee955d8";
-    messageSend(draw_id);
+    //messageSend(draw_id);
 
+    var j = schedule.scheduleJob('0 33 19 24 6 ？2019',()=>{
+        getAllId(draw_id).then(()=>{
+            console.log("执行完毕");
+        })
+    })
     resback.send({error: null});
 });
 
