@@ -52,13 +52,58 @@ async function jobFunction(job, done) {
     done(success);
 }
 
-async function messageSend(){
+async function messageSend(draw_id){
+    //其实感觉下面两个await可以并发，但是不知道怎么写
+    var ids = await getAllId(draw_id).catch((err)=>{
+        throw err;
+    })
     var body = await getToken().catch((err)=>{
         throw err;
     });
+    
+    //处理没有抽奖着的问题
+    ids.forEach(element => {
+        console.log("element:",element);
+        console.log("element.ID",element.id);
+        console.log("element.formId",element.formId);
+    });
+
     console.log(body);
     var response = JSON.parse(body);
     console.log(response.access_token);
+
+    var messageData = {
+        "touser": "OPENID",
+        "template_id": "TEMPLATE_ID",
+        "page": "index",
+        "form_id": "FORMID",
+        "data": {
+            "keyword1": {
+                "value": "339208499"
+            },
+            "keyword2": {
+                "value": "2015年01月05日 12:30"
+            },
+            "keyword3": {
+                "value": "腾讯微信总部"
+            } ,
+            "keyword4": {
+                "value": "广州市海珠区新港中路397号"
+            }
+        },
+        "emphasis_keyword": "keyword1.DATA"
+    }
+      
+    
+    // var options = {
+    //     method: "POST",
+    //     url: "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token="+response.access_token,
+    //     json: true,
+    //     headers: {
+    //         "content-type": "application/json",
+    //     },
+    //     body: 
+    // };
 }
 
 async function getToken(){
@@ -90,6 +135,26 @@ async function getToken(){
             }
         })
     })
+}
+
+async function getAllId(draw_id){
+    return new Promise((resolve,reject)=>{
+        console.log("去数据库获得id和formid");
+        MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+            if(db_err) reject(db_err);
+            console.log("into resolve");
+            var dbase = db.db("lucky");
+            console.log("db connected");
+            var col = dbase.collection("joiner");
+            col.find({draw_id: draw_id}).toArray((find_err,find_result)=>{
+                if(find_err) reject(find_err);
+                console.log(find_result);
+                resolve(find_result);
+                db.close();
+            })
+        });
+    });
+    
 }
 
 router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field，并没使用fieldname
@@ -254,7 +319,7 @@ router.post("/join", (req,resback)=>{
 
 router.get("/test",(req,resback)=>{
     console.log("/draw/test");
-    messageSend();
+    messageSend("draw-34050ce0-94d2-11e9-b85e-f7377ee955d8");
     resback.send({error: null});
 });
 
