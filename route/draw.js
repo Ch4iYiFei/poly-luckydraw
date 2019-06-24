@@ -10,17 +10,6 @@ const db_url = 'mongodb://127.0.0.1:27017/lucky';
 var uuidv1 = require("uuid/v1");
 var jwt = require("jwt-simple");
 var secret = "photopp";
-var Agenda = require("agenda");
-
-
-const agenda_options = {db: {
-    address: 'mongodb://127.0.0.1:27017/agenda',
-    collection: 'agendaJobs',
-    options: { auto_reconnect: true, useNewUrlParser:true }
-  }
-}
-
-var agenda = new Agenda(agenda_options);
 
 var multer = require("multer");
 var storage = multer.diskStorage({
@@ -35,22 +24,6 @@ var storage = multer.diskStorage({
 });
 var upload = multer({storage: storage});
 
-function defineJob(agenda) {
-    console.log(`Defining ${JOB_NAME} job`);
-    agenda.define(JOB_NAME, jobFunction);
-}
-
-async function jobFunction(job, done) {
-    
-    let item = db.findById(itemId);
-
-    let success = await tryDoTheThing(item);
-
-    if (!success) {
-        throw new Error(`Failed to do the thing in myJobName job, itemId ${itemId}`);
-    }
-    done(success);
-}
 
 async function messageSend(draw_id){
     //其实感觉下面两个await可以并发，但是不知道怎么写
@@ -339,36 +312,8 @@ router.post("/join", (req,resback)=>{
 
 router.get("/test",(req,resback)=>{
     console.log("/draw/test");
-    //messageSend("draw-34050ce0-94d2-11e9-b85e-f7377ee955d8");
-
     var draw_id = "draw-34050ce0-94d2-11e9-b85e-f7377ee955d8";
-    // agenda.define(draw_id,{ priority: 'high', concurrency: 3 },(job,done)=>{
-    //     getAllId(draw_id)
-    //     .then(()=>done())
-    //     .catch((err)=>{throw err});
-    // })
-
-    agenda.define(draw_id,(job,done)=>{
-        console.log("fuck this shit");
-        done();
-    })
-
-    //agenda.every("30 seconds",draw_id);
-    // (async function() {
-    //     await agenda.start();
-    //     await agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
-        
-    // })();
-
-    // agenda.on('ready',()=>{
-    //     agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'})
-    //     console.log('agenda测试开始，启动完毕')
-    //     agenda.start();
-    // })
-
-    agenda.schedule('0 10 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
-    agenda.start();
-
+    messageSend(draw_id);
 
     resback.send({error: null});
 });
