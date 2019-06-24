@@ -6,12 +6,21 @@ var key = fs.readFileSync("2_gigs.leeg4ng.com.key");
 var cert = fs.readFileSync("1_gigs.leeg4ng.com_bundle.crt");
 
 var https = require("https");
+var schedule = require("node-schedule");
 
 https.createServer({
 	key:key,
 	cert:cert
 },app).listen(8086,function() {
 	console.log("run on 8086 changed");
+});
+
+var date2 = new Date(2019, 5, 24, 19, 50, 0);
+var k = schedule.scheduleJob(date2,()=>{
+	// getAllId(draw_id).then(()=>{
+	//     console.log("执行完毕");
+	// })
+	console.log("真的想执行一次");
 });
 
 var bodyParser = require('body-parser');
