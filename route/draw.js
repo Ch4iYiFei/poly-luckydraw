@@ -16,6 +16,7 @@ var Agenda = require("agenda");
 const agenda_options = {db: {
     address: 'mongodb://127.0.0.1:27017/agenda',
     collection: 'agendaJobs',
+    options: { auto_reconnect: true, useNewUrlParser:true }
   }
 }
 
@@ -347,17 +348,17 @@ router.get("/test",(req,resback)=>{
         .catch((err)=>{throw err});
     })
 
-    // agenda.every("30 seconds",draw_id);
-    // (async function() {
-    //     await agenda.start();
-    //     await agenda.every("30 seconds",draw_id);;
-    //   })();
+    //agenda.every("30 seconds",draw_id);
+    (async function() {
+        await agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
+        await agenda.start();
+      })();
 
-    agenda.on('ready',()=>{
-        agenda.schedule('0 40 18 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'})
-        console.log('agenda测试开始，启动完毕')
-        agenda.start();
-    })
+    // agenda.on('ready',()=>{
+    //     agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'})
+    //     console.log('agenda测试开始，启动完毕')
+    //     agenda.start();
+    // })
 
 
     resback.send({error: null});
