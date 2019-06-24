@@ -315,8 +315,9 @@ router.get("/test",(req,resback)=>{
     console.log("/draw/test");
     var draw_id = "draw-34050ce0-94d2-11e9-b85e-f7377ee955d8";
     //messageSend(draw_id);
+    var date = new Date(2019, 5, 24, 19, 38, 0);
 
-    var j = schedule.scheduleJob('0 33 19 24 6 ？2019',()=>{
+    var j = schedule.scheduleJob(date,()=>{
         getAllId(draw_id).then(()=>{
             console.log("执行完毕");
         })
