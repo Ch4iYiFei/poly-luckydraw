@@ -349,10 +349,10 @@ router.get("/test",(req,resback)=>{
     })
 
     // agenda.every("30 seconds",draw_id);
-    agenda.on("ready",()=>{
-        agenda.every("30 seconds",draw_id);
-        agenda.start();
-    })
+    (async function() {
+        await agenda.start();
+        await agenda.every("30 seconds",draw_id);;
+      })();
 
     resback.send({error: null});
 });
