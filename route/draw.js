@@ -60,6 +60,9 @@ async function messageSend(){
 }
 
 async function getToken(){
+    var appid = "wx55bd9c881859ddb5";
+    var appsecret = require("../AppSecret");
+
     var param = {
         grant_type: "client_credential",
         appid: appid,
