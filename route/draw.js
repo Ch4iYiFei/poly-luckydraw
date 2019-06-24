@@ -349,17 +349,20 @@ router.get("/test",(req,resback)=>{
     })
 
     //agenda.every("30 seconds",draw_id);
-    (async function() {
-        await agenda.start();
-        await agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
+    // (async function() {
+    //     await agenda.start();
+    //     await agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
         
-      })();
+    // })();
 
     // agenda.on('ready',()=>{
     //     agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'})
     //     console.log('agenda测试开始，启动完毕')
     //     agenda.start();
     // })
+
+    agenda.schedule('0 0 19 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'});
+    agenda.start();
 
 
     resback.send({error: null});
