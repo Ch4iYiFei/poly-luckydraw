@@ -16,8 +16,8 @@ var Agenda = require("agenda");
 const agenda_options = {db: {
     address: 'mongodb://127.0.0.1:27017/agenda',
     collection: 'agendaJobs',
-    options: { server: { auto_reconnect: true } },
-  },
+    options: { server: { auto_reconnect: true, useNewUrlParser:true} }
+  }
 }
 
 var agenda = new Agenda(agenda_options);
@@ -53,11 +53,12 @@ async function jobFunction(job, done) {
 }
 
 async function messageSend(){
-    var body = await getToken();
+    var body = await getToken().catch((err)=>{
+        throw err;
+    });
     console.log(body);
-    var access_token = body.access_token;
-   // JSON.parse
-    console.log(access_token);
+    var response = JSON.parse(body);
+    console.log(response.access_token);
 }
 
 async function getToken(){
