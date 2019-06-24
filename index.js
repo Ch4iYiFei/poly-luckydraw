@@ -15,12 +15,14 @@ https.createServer({
 	console.log("run on 8086 changed");
 });
 
-var date2 = new Date(2019, 5, 24, 19, 50, 0);
-var k = schedule.scheduleJob(date2,()=>{
-	// getAllId(draw_id).then(()=>{
-	//     console.log("执行完毕");
-	// })
-	console.log("真的想执行一次");
+var date = new Date(2019, 5, 24, 20, 0, 0);
+// var date2 = new Date()
+ 
+var j = schedule.scheduleJob(date, function(){
+    console.log('The world is going to end today.');
+});
+var k = schedule.scheduleJob("30 * * * * *",function(){
+	console.log("30秒");
 });
 
 var bodyParser = require('body-parser');
