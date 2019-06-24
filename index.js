@@ -24,6 +24,9 @@ var j = schedule.scheduleJob(date, function(){
 var k = schedule.scheduleJob("30 * * * * *",function(){
 	console.log("30秒");
 });
+var l = schedule.scheduleJob("0 5 20 24 6 ? 2019",function(){
+	console.log("求求你");
+})
 
 var bodyParser = require('body-parser');
 
