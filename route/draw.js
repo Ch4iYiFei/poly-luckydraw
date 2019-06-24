@@ -316,6 +316,8 @@ router.get("/test",(req,resback)=>{
     var draw_id = "draw-34050ce0-94d2-11e9-b85e-f7377ee955d8";
     //messageSend(draw_id);
     var date = new Date(2019, 5, 24, 19, 42, 0);
+    var date2 = new Date(2019, 6, 24, 19, 45, 0);
+
 
     var j = schedule.scheduleJob(date,()=>{
         // getAllId(draw_id).then(()=>{
@@ -323,7 +325,13 @@ router.get("/test",(req,resback)=>{
         // })
         console.log("真的想执行一次");
     })
-    //resback.send({error: null});
+    var k = schedule.scheduleJob(date2,()=>{
+        // getAllId(draw_id).then(()=>{
+        //     console.log("执行完毕");
+        // })
+        console.log("真的想执行一次");
+    })
+    resback.send({error: null});
 });
 
 module.exports = router;
