@@ -349,10 +349,17 @@ router.get("/test",(req,resback)=>{
     })
 
     // agenda.every("30 seconds",draw_id);
-    (async function() {
-        await agenda.start();
-        await agenda.every("30 seconds",draw_id);;
-      })();
+    // (async function() {
+    //     await agenda.start();
+    //     await agenda.every("30 seconds",draw_id);;
+    //   })();
+
+    agenda.on('ready',()=>{
+        agenda.schedule('0 40 18 24 6 ？2019', draw_id, {}, {timezone: 'Asia/Shanghai'})
+        console.log('agenda测试开始，启动完毕')
+        agenda.start();
+    })
+
 
     resback.send({error: null});
 });
