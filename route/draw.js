@@ -11,6 +11,12 @@ var uuidv1 = require("uuid/v1");
 var jwt = require("jwt-simple");
 var secret = "photopp";
 
+
+
+const agenda_options = {db: {address: 'mongodb://127.0.0.1:27017/agenda', collection: 'agendaJobs'}};
+
+var agenda = new Agenda(agenda_options);
+
 var multer = require("multer");
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -29,6 +35,19 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
     var file = req.file;
     //console.log(req.file);
     //console.log(req.body);
+    var draw_id = 'draw-' + uuidv1();
+
+    agenda.define(draw_id, (job) => {
+        console.log("正在使用agenda");
+        //done();
+    });
+
+    agenda.schedule("in 3 minutes",draw_id);
+
+    // (async function() {
+
+    // }
+
     
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
         if(db_err) throw db_err;
@@ -49,7 +68,6 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
         // console.log(new Boolean(pub).valueOf());
 
 
-        var draw_id = 'draw-' + uuidv1();
         var token = req.body.jwt;
         var publisher = jwt.decode(token,secret).iss;
         console.log("发布者",publisher);
