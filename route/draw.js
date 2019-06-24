@@ -16,7 +16,6 @@ var Agenda = require("agenda");
 const agenda_options = {db: {
     address: 'mongodb://127.0.0.1:27017/agenda',
     collection: 'agendaJobs',
-    options: { server: { auto_reconnect: true } },
   }
 }
 
