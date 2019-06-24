@@ -35,6 +35,58 @@ var storage = multer.diskStorage({
 });
 var upload = multer({storage: storage});
 
+function defineJob(agenda) {
+    console.log(`Defining ${JOB_NAME} job`);
+    agenda.define(JOB_NAME, jobFunction);
+}
+
+async function jobFunction(job, done) {
+    
+    let item = db.findById(itemId);
+
+    let success = await tryDoTheThing(item);
+
+    if (!success) {
+        throw new Error(`Failed to do the thing in myJobName job, itemId ${itemId}`);
+    }
+    done(success);
+}
+
+async function messageSend(){
+    var body = await getToken();
+    console.log(body);
+    var access_token = body.access_token;
+    console.log(access_token);
+}
+
+async function getToken(){
+    var param = {
+        grant_type: "client_credential",
+        appid: appid,
+        secret: appsecret,
+        
+    };
+    var options = {
+        method: "get",
+        url: "https://api.weixin.qq.com/cgi-bin/token?" + qs.stringify(param)
+    };
+    console.log(options.url);
+
+    return new Promise((resolve,reject)=>{
+        console.log("微信端开始");
+        request(options, (err, res, body) => {
+            if(err)
+            {
+                console.log("into reject");
+                reject(err);
+            }else {
+                console.log("into resolve");
+                resolve(body);
+            }
+        })
+    })
+}
+
 router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field，并没使用fieldname
     console.log("/draw/publish");
     var file = req.file;
@@ -193,6 +245,12 @@ router.post("/join", (req,resback)=>{
         // })
         
     });
+});
+
+router.get("/test",(req,resback)=>{
+    console.log("/draw/test");
+    messageSend();
+    resback.send({error: null});
 });
 
 module.exports = router;
