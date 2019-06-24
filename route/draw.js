@@ -138,19 +138,24 @@ router.post("/join", (req,resback)=>{
         
         var col_draw = dbase.collection("draw");
         var col_user = dbase.collection("user");
+        var col_joiner = dbase.collection("joiner");
 
         //addToSet不会添加重复的joiner,
         //upsert在找不到drawid时insert，找不到时update,但是这种情况不可能发送
-        col_draw.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiners: joiner}}, (insert_err,insert_result)=>{
-            if(insert_err) throw insert_err;
+        col_draw.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiners: joiner}}, (update_err1,update_result1)=>{
+            if(update_err1) throw update_err1;
             console.log("抽奖中更新用户成功");
             //...........
-            col_user.updateOne({id: joiner},{$addToSet:{draws: req.body.draw_id}}, (insert_err,insert_result)=>{
-                if(insert_err) throw insert_err;
+            col_user.updateOne({id: joiner},{$addToSet:{draws: req.body.draw_id}}, (update_err2,update_result2)=>{
+                if(update_err2) throw update_err2;
                 console.log("用户中更新抽奖成功");
                 //...........
-                resback.send({error: null});
-                db.close();
+                col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId}, (insert_err,insert_result)=>{
+                    if(insert_err) throw insert_err;
+                    console.log("加入formId成功");
+                    resback.send({error: null});
+                    db.close();
+                });
             });
         });
 
