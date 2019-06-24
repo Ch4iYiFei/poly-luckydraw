@@ -195,13 +195,6 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
     //     console.log("正在使用agenda");
     //     done();
     // });
-
-
-    // (async function() {
-    //     await agenda.start();
-    //     await agenda.schedule("*/3 * * * *",draw_id);
-    // })();
-
     
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
         if(db_err) throw db_err;
@@ -346,7 +339,21 @@ router.post("/join", (req,resback)=>{
 
 router.get("/test",(req,resback)=>{
     console.log("/draw/test");
-    messageSend("draw-34050ce0-94d2-11e9-b85e-f7377ee955d8");
+    //messageSend("draw-34050ce0-94d2-11e9-b85e-f7377ee955d8");
+
+    var draw_id = "draw-34050ce0-94d2-11e9-b85e-f7377ee955d8";
+    agenda.define(draw_id,(job,done)=>{
+        getAllId(draw_id)
+        .then(()=>done())
+        .catch((err)=>{throw err});
+    })
+
+    // agenda.every("30 seconds",draw_id);
+    agenda.on("ready",()=>{
+        agenda.every("30 seconds",draw_id);
+        agenda.start();
+    })
+
     resback.send({error: null});
 });
 
