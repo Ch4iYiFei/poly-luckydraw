@@ -13,7 +13,12 @@ var secret = "photopp";
 var Agenda = require("agenda");
 
 
-const agenda_options = {db: {address: 'mongodb://127.0.0.1:27017/agenda', collection: 'agendaJobs'}};
+const agenda_options = {db: {
+    address: 'mongodb://127.0.0.1:27017/agenda',
+    collection: 'agendaJobs',
+    options: { server: { auto_reconnect: true } },
+  },
+}
 
 var agenda = new Agenda(agenda_options);
 
@@ -37,16 +42,16 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
     //console.log(req.body);
     var draw_id = 'draw-' + uuidv1();
 
-    agenda.define(draw_id, (job) => {
+    agenda.define(draw_id, (job,done) => {
         console.log("正在使用agenda");
-        //done();
+        done();
     });
 
-    agenda.schedule("in 3 minutes",draw_id);
 
-    // (async function() {
-
-    // }
+    (async function() {
+        await agenda.start();
+        await agenda.schedule("*/3 * * * *",draw_id);
+    })();
 
     
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
