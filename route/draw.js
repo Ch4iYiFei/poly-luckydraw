@@ -10,7 +10,7 @@ const db_url = 'mongodb://127.0.0.1:27017/lucky';
 var uuidv1 = require("uuid/v1");
 var jwt = require("jwt-simple");
 var secret = "photopp";
-
+var Agenda = require("agenda");
 
 
 const agenda_options = {db: {address: 'mongodb://127.0.0.1:27017/agenda', collection: 'agendaJobs'}};
