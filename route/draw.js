@@ -343,7 +343,9 @@ router.get("/test",(req,resback)=>{
 
     var draw_id = "draw-34050ce0-94d2-11e9-b85e-f7377ee955d8";
     agenda.define(draw_id,{ priority: 'high', concurrency: 3 },(job,done)=>{
-        getAllId(draw_id,done);
+        getAllId(draw_id)
+        .then(()=>done())
+        .catch((err)=>{throw err});
     })
 
     //agenda.every("30 seconds",draw_id);
