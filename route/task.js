@@ -21,7 +21,7 @@ module.exports = {
             console.log(arr);
             var arr2 = element.time.split(":");
             console.log(arr2);
-
+            //var Date = new Date()
         });
     },
 //可能会出现删除抽奖后的问题
