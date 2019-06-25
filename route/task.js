@@ -17,10 +17,14 @@ module.exports = {
     doThemAll: async function doThemAll(){
         allTask = await this.findAllTask();
         allTask.forEach(element=>{
-            console.log(element.draw_id);
+            var arr = element.date.split("-");
+            console.log(arr);
+            var arr2 = element.time.split(":");
+            console.log(arr2);
+
         });
     },
-
+//可能会出现删除抽奖后的问题
     findAllTask: async function findAllTask(){
         return new Promise((resolve,reject)=>{
             console.log("去数据库获得所有的draw_id");
@@ -29,7 +33,7 @@ module.exports = {
                 console.log("into resolve");
                 var dbase = db.db("lucky");
                 console.log("db connected");
-                var col = dbase.collection("joiner");
+                var col = dbase.collection("draw");
                 col.find().toArray((find_err,find_result)=>{
                     if(find_err) reject(find_err);
                     console.log(find_result);
