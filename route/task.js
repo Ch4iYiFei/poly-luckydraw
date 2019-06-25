@@ -72,7 +72,7 @@ module.exports = {
             var messageData = {
                 "touser": element.id,
                 "template_id": "_jZtBpX7u2NlIi6y-f8bCttH-75A2Ix2IEd3QthfzKE",
-                //"page": "pages/detail/detail?",
+                "page": "pages/detail/detail?draw_id="+draw_id,
                 "form_id": element.formId,
                 "data": {
                     "keyword1": {
