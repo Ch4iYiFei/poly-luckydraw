@@ -261,7 +261,6 @@ router.post("/fetch/public", (req,resback)=>{
             db.close();
         });
     });
-
 });
 
 router.post("/join", (req,resback)=>{
@@ -310,6 +309,37 @@ router.post("/join", (req,resback)=>{
         // })
         
     });
+});
+
+
+router.post("/delete",(req,resback)=>{
+    console.log("/draw/delete");
+    console.log(req.body);
+    var token = req.body.jwt;
+    var deleter = jwt.decode(token,secret).iss;
+
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky");
+        console.log("db connected");
+
+        var col = dbase.collection("draw");
+        col.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
+            if(find_err) throw find_err;
+            console.log(find_result);
+            if(deleter == find_result.publisher){
+                console.log("是发布者发来的删除");
+                col.deleteOne({draw_id: req.body.draw_id},(delete_err, delete_result)=>{
+                    if(delete_err) throw delete_err;
+                    console.log("删除抽奖成功");
+                    resback.send({error: null});
+                    db.close();
+                })
+            }else
+                console.log("未知的删除者");
+        })
+    });
+
 });
 
 router.get("/test",(req,resback)=>{
