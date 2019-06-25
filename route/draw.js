@@ -330,6 +330,7 @@ router.post("/delete",(req,resback)=>{
             if(!find_result){
                 console.log("删除了一个已经不存在的抽奖");
                 resback.send({error: "删除了不存在的抽奖"});
+                db.close();
             }
             if(deleter == find_result.publisher){
                 console.log("是发布者发来的删除");
