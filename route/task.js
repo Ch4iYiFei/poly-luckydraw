@@ -25,6 +25,8 @@ module.exports = {
         });
     },
 //可能会出现删除抽奖后的问题
+
+//之查询drawid链
     findAllTask: async function findAllTask(){
         return new Promise((resolve,reject)=>{
             console.log("去数据库获得所有的draw_id");

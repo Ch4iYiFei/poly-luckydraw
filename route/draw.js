@@ -215,6 +215,32 @@ router.post("/delete",(req,resback)=>{
 
 });
 
+router.post("/findOne",(req,resback)=>{
+    console.log("/draw/findOne");
+    console.log(req.body);
+    var token = req.body.jwt;
+    var finder = jwt.decode(token,secret).iss;
+
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky");
+        console.log("db connected");
+
+        var col = dbase.collection("draw");
+        col.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
+            if(find_err) throw find_err;
+            console.log(find_result);
+            if(!find_result){
+                console.log("查询了一个已经不存在的抽奖");
+                resback.statusCode(404).send({error: "查询了不存在的抽奖"});
+                db.close();
+            }
+            console.log("查询抽奖成功");
+            resback.send(find);
+            db.close();
+        })
+    });
+})
 
 router.get("/test",(req,resback)=>{
     console.log("/draw/test");
