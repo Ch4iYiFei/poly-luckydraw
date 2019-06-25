@@ -79,7 +79,7 @@ module.exports = {
                 "form_id": element.formId,
                 "data": {
                     "keyword1": {
-                        "value": info.award
+                        "value": info.awards.toString()
                     },
                     "keyword2": {
                         "value": "点击进入查看抽奖结果"
@@ -118,6 +118,7 @@ module.exports = {
 
     openDraw: async function openDraw(ids,info){
         var award_length = info.awards.length;
+        console.log(award_length);
         function shuffle(a) {
             for (let i = a.length; i; i--) {
                 let j = Math.floor(Math.random() * i);
@@ -126,6 +127,7 @@ module.exports = {
             return a;
         }
         return Promise.all(shuffle(ids).map(async function(element){
+            console.log(element);
             var res;
             if(award_length>=0){
                 //element.result对应随机下标，写入数据库
@@ -147,7 +149,8 @@ module.exports = {
                     //     resolve(find_result);
                     //     db.close();
                     // })
-                    col.updateOne({id: element.id},{$set:{result: res}},(update_err,update_result)=>{
+                    col.updateOne({id: element.id,draw_id: info.draw_id},{$set:{result: res}},(update_err,update_result)=>{
+                        console.log("res是：",res);
                         if(update_err) reject(update_err);
                         resolve(update_result);
                         db.close();
