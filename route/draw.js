@@ -236,7 +236,7 @@ router.post("/findOne",(req,resback)=>{
                 db.close();
             }
             console.log("查询抽奖成功");
-            resback.send(find);
+            resback.send(find_result);
             db.close();
         })
     });
