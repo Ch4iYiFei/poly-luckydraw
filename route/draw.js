@@ -179,7 +179,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
         console.log("文件类型",file.mimetype);
         console.log("文件保存路径", file.path);
         console.log("文件名称",file.filename);
-        console.log(req.body.award);
+        console.log(req.body.awards);
         console.log(req.body.desc);
         console.log(req.body.time);
         console.log(req.body.date);
@@ -193,7 +193,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
         var publisher = jwt.decode(token,secret).iss;
         console.log("发布者",publisher);
         
-        var object = {draw_id: draw_id, name: file.filename, publisher:publisher, award: req.body.award, desc: req.body.desc, date:req.body.date, time: req.body.time, isPublic:req.body.isPublic, joiners: []};
+        var object = {draw_id: draw_id, name: file.filename, publisher:publisher, awards: req.body.awards, desc: req.body.desc, date:req.body.date, time: req.body.time, isPublic:req.body.isPublic, joiners: []};
         console.log(object);
         col.insertOne(object, (insert_err,insert_result)=>{
             if(insert_err) throw insert_err;
