@@ -131,7 +131,7 @@ module.exports = {
             var res;
             if(award_length>=0){
                 //element.result对应随机下标，写入数据库
-                res = award_length--;
+                res = --award_length;
             }else{
                 res = -1;
             }
