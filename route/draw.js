@@ -24,7 +24,7 @@ var storage = multer.diskStorage({
     }
 });
 var upload = multer({storage: storage});
-
+var task = require("./task");
 
 router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field，并没使用fieldname
     console.log("/draw/publish");
@@ -33,10 +33,14 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
     //console.log(req.body);
     var draw_id = 'draw-' + uuidv1();
 
-    // agenda.define(draw_id, (job,done) => {
-    //     console.log("正在使用agenda");
-    //     done();
-    // });
+    var date_arr = element.date.split("-");
+    var time_arr = element.time.split(":");
+    var date = new Date(date_arr[0],date_arr[1],date_arr[2],time_arr[0],time_arr[1]);
+    console.log(date.toUTCString);
+    console.log("在这个时间点大概会执行");
+    schedule.scheduleJob(date,()=>{
+        task.messagesend(draw_id);
+    });
     
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
         if(db_err) throw db_err;
