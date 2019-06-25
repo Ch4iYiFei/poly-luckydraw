@@ -66,6 +66,9 @@ module.exports = {
         console.log(response.access_token);
     
         //处理没有抽奖着的问
+        await this.openDraw(ids,info).catch((err)=>{
+            throw err;
+        });
 
         await Promise.all(ids.map(async function(element){
             console.log("开始发送消息");
@@ -113,7 +116,48 @@ module.exports = {
     },
 
 
+    openDraw: async function openDraw(ids,info){
+        var award_length = info.award.length;
+        function shuffle(a) {
+            for (let i = a.length; i; i--) {
+                let j = Math.floor(Math.random() * i);
+                [a[i - 1], a[j]] = [a[j], a[i - 1]];
+            }
+            return a;
+        }
+        return Promise.all(shuffle(ids).map(async function(element){
+            var res;
+            if(award_length>=0){
+                //element.result对应随机下标，写入数据库
+                res = award_length--;
+            }else{
+                res = -1;
+            }
+            await new Promise((resolve,reject)=>{
+                console.log("开始写入数据库");
+                MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+                    if(db_err) reject(db_err);
+                    console.log("into resolve");
+                    var dbase = db.db("lucky");
+                    console.log("db connected");
+                    var col = dbase.collection("joiner");
+                    // col.find({draw_id: draw_id}).toArray((find_err,find_result)=>{
+                    //     if(find_err) reject(find_err);
+                    //     console.log(find_result);
+                    //     resolve(find_result);
+                    //     db.close();
+                    // })
+                    col.updateOne({id: element.id},{result: res},(update_err,update_result)=>{
+                        if(update_err) reject(update_err);
+                        resolve(update_result);
+                        db.close();
+                    })
+                });
+            })
+        }));
 
+        
+    },
     
     getToken: async function getToken(){
         var appid = "wx55bd9c881859ddb5";
