@@ -15,27 +15,11 @@ https.createServer({
 	console.log("run on 8086 changed");
 });
 
-// var dateset = new Date(2019, 5, 24, 8, 30, 0);
 var date = new Date();
 console.log(date.getTimezoneOffset());
-console.log(date.toUTCString());
-// // var date2 = new Date()
- 
-// var j = schedule.scheduleJob(dateset, function(){
-//     console.log('The world is going to end today.');
-// });
-// var k = schedule.scheduleJob("30 * * * * *",function(){
-// 	console.log("30秒");
-// });
-// var l = schedule.scheduleJob("0 5 20 24 6 ? 2019",function(){
-// 	console.log("求求你");
-// })
+console.log(date.toLocaleString());
 
 var task = require("./route/task");
-// var date = new Date(2019, 5, 25, 10, 30, 0);
-// var j = schedule.scheduleJob(date, function(){
-	
-// });
 task.doThemAll();
 
 var bodyParser = require('body-parser');

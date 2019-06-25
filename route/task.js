@@ -20,7 +20,7 @@ module.exports = {
             var date_arr = element.date.split("-");
             var time_arr = element.time.split(":");
             var date = new Date(date_arr[0],date_arr[1]-1,date_arr[2],time_arr[0],time_arr[1]);
-            console.log(date.toUTCString());
+            console.log(date.toLocaleString());
             schedule.scheduleJob(date,()=>{
                 console.log("大概可能就会执行");
                 this.messagesend(element.draw_id);
@@ -65,11 +65,9 @@ module.exports = {
         var response = JSON.parse(body);
         console.log(response.access_token);
     
-        //处理没有抽奖着的问题
-        ids.forEach(element => {
-            //console.log("element:",element);
-            //console.log("element.ID",element.id);
-            //console.log("element.formId",element.formId);
+        //处理没有抽奖着的问
+
+        await Promise.all(ids.map(async function(element){
             console.log("开始发送消息");
             var messageData = {
                 "touser": element.id,
@@ -99,16 +97,23 @@ module.exports = {
                 },
                 body: messageData,
             };
+            await new Promise((resolve,reject)=>{
+                request(options,(err, res, body)=>{
+                    if(err) reject(err);
+                    else{
+                        console.log("应该已经发送了模版消息");
+                        console.log(res.body);
+                        resolve(body);
+                    }
+                    
+                })
+            });
             
-            request(options,(err, res, body)=>{
-                console.log("应该已经发送了模版消息");
-                console.log(res.body);
-            })
-        
-        });
-    
-        
+        }));
     },
+
+
+
     
     getToken: async function getToken(){
         var appid = "wx55bd9c881859ddb5";

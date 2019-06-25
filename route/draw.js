@@ -36,7 +36,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
     var date_arr = req.body.date.split("-");
     var time_arr = req.body.time.split(":");
     var date = new Date(date_arr[0],date_arr[1]-1,date_arr[2],time_arr[0],time_arr[1]);
-    console.log(date.toUTCString());
+    console.log(date.toLocaleString());
     console.log("在这个时间点大概会执行");
     schedule.scheduleJob(date,()=>{
         task.messagesend(draw_id);
@@ -161,7 +161,7 @@ router.post("/join", (req,resback)=>{
                 if(update_err2) throw update_err2;
                 console.log("用户中更新抽奖成功");
                 //...........
-                col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId}, (insert_err,insert_result)=>{
+                col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId, result: null}, (insert_err,insert_result)=>{
                     if(insert_err) throw insert_err;
                     console.log("加入formId成功");
                     resback.send({error: null});
@@ -245,6 +245,8 @@ router.post("/findOne",(req,resback)=>{
         })
     });
 })
+
+
 
 router.get("/test",(req,resback)=>{
     console.log("/draw/test");
