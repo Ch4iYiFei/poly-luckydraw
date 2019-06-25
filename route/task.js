@@ -35,7 +35,7 @@ module.exports = {
                 var dbase = db.db("lucky");
                 console.log("db connected");
                 var col = dbase.collection("draw");
-                col.find({},{draw_id: 1}).toArray((find_err,find_result)=>{
+                col.find({},{projection:{'draw_id': 1,'_id': 0}}).toArray((find_err,find_result)=>{
                     if(find_err) reject(find_err);
                     console.log(find_result);
                     resolve(find_result);
