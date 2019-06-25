@@ -21,6 +21,10 @@ module.exports = {
             var time_arr = element.time.split(":");
             var date = new Date(date_arr[0],date_arr[1],date_arr[2],time_arr[0],time_arr[1]);
             console.log(date.toLocaleTimeString());
+            schedule.scheduleJob(date,()=>{
+                console.log("大概可能就会执行");
+                this.messagesend(element.draw_id);
+            })
         });
     },
 //可能会出现删除抽奖后的问题
