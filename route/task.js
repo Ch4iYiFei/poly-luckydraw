@@ -20,7 +20,7 @@ module.exports = {
             var date_arr = element.date.split("-");
             var time_arr = element.time.split(":");
             var date = new Date(date_arr[0],date_arr[1],date_arr[2],time_arr[0],time_arr[1]);
-            console.log(date.toLocaleTimeString);
+            console.log(date.toLocaleTimeString());
         });
     },
 //可能会出现删除抽奖后的问题
