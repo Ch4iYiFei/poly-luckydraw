@@ -327,6 +327,10 @@ router.post("/delete",(req,resback)=>{
         col.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
             if(find_err) throw find_err;
             console.log(find_result);
+            if(!find_result){
+                console.log("删除了一个已经不存在的抽奖");
+                resback.send({error: "删除了不存在的抽奖"});
+            }
             if(deleter == find_result.publisher){
                 console.log("是发布者发来的删除");
                 col.deleteOne({draw_id: req.body.draw_id},(delete_err, delete_result)=>{
