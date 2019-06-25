@@ -147,7 +147,7 @@ module.exports = {
                     //     resolve(find_result);
                     //     db.close();
                     // })
-                    col.updateOne({id: element.id},{result: res},(update_err,update_result)=>{
+                    col.updateOne({id: element.id},{$set:{result: res}},(update_err,update_result)=>{
                         if(update_err) reject(update_err);
                         resolve(update_result);
                         db.close();
