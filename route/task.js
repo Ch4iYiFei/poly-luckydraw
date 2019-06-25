@@ -21,7 +21,7 @@ module.exports = {
             console.log(arr);
             var arr2 = element.time.split(":");
             console.log(arr2);
-            //var Date = new Date()
+            var Date = new Date(arr)
         });
     },
 //可能会出现删除抽奖后的问题
@@ -36,7 +36,7 @@ module.exports = {
                 var dbase = db.db("lucky");
                 console.log("db connected");
                 var col = dbase.collection("draw");
-                col.find().toArray((find_err,find_result)=>{
+                col.find({},{_id: 0,draw_id: 1}).toArray((find_err,find_result)=>{
                     if(find_err) reject(find_err);
                     console.log(find_result);
                     resolve(find_result);
