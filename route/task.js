@@ -49,15 +49,15 @@ module.exports = {
         });
     },
 
-    messagesend: async function messageSend(draw_id){
+    messagesend: async function messagesend(draw_id){
         //其实感觉下面两个await可以并发，但是不知道怎么写
-        var ids = await getAllId(draw_id).catch((err)=>{
+        var ids = await this.getAllId(draw_id).catch((err)=>{
             throw err;
         });
-        var info = await getDrawInfo(draw_id).catch((err)=>{
+        var info = await this.getDrawInfo(draw_id).catch((err)=>{
             throw err;
         });
-        var body = await getToken().catch((err)=>{
+        var body = await this.getToken().catch((err)=>{
             throw err;
         });
     
