@@ -31,6 +31,13 @@ https.createServer({
 // 	console.log("求求你");
 // })
 
+var task = require("./route/task");
+// var date = new Date(2019, 5, 25, 10, 30, 0);
+// var j = schedule.scheduleJob(date, function(){
+	
+// });
+task.doThemAll();
+
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json({limit: '50mb'}));
@@ -40,6 +47,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 var userRouter = require("./route/user");
 var drawRouter = require("./route/draw");
 var cpntRouter = require("./route/cpnt");
+
 
 app.use('/user',userRouter);
 app.use('/draw',drawRouter);
