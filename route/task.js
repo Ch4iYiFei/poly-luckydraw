@@ -117,7 +117,7 @@ module.exports = {
 
 
     openDraw: async function openDraw(ids,info){
-        var award_length = info.award.length;
+        var award_length = info.awards.length;
         function shuffle(a) {
             for (let i = a.length; i; i--) {
                 let j = Math.floor(Math.random() * i);
