@@ -18,7 +18,7 @@ https.createServer({
 // var dateset = new Date(2019, 5, 24, 8, 30, 0);
 var date = new Date();
 console.log(date.getTimezoneOffset());
-console.log(date.toLocaleTimeString());
+console.log(date.toUTCString());
 // // var date2 = new Date()
  
 // var j = schedule.scheduleJob(dateset, function(){
