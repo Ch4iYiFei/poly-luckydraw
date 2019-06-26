@@ -239,7 +239,7 @@ router.post("/findOne",(req,resback)=>{
             console.log(find_result_in_draw);
             if(!find_result_in_draw){
                 console.log("查询了一个已经不存在的抽奖");
-                resback.statusCode(404).send({error: "查询了不存在的抽奖"});
+                resback.status(404).send({error: "查询了不存在的抽奖"});
                 db.close();
             }
             console.log("查询抽奖成功");
