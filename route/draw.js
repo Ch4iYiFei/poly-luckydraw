@@ -155,15 +155,24 @@ router.post("/join", (req,resback)=>{
         //upsert在找不到drawid时insert，找不到时update,但是这种情况不可能发送
         col_draw.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiners: joiner}}, (update_err1,update_result1)=>{
             if(update_err1) throw update_err1;
-            console.log(update_result1);
+            //console.log(update_result1);
             console.log("抽奖中更新用户成功");
             //...........
-            col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId, result: null}, (insert_err,insert_result)=>{
-                if(insert_err) throw insert_err;
-                console.log("加入formId成功");
-                resback.send({error: null});
+
+            if(update_result1.result.n==0){
+                console.log("没找到这个抽奖，却还有人想抽奖");
+                resback.status(404).send({error: "该抽奖不存在或已被删除"});
                 db.close();
-            });
+            }else{
+                col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId, result: null}, (insert_err,insert_result)=>{
+                    if(insert_err) throw insert_err;
+                    console.log("加入formId成功");
+                    resback.send({error: null});
+                    db.close();
+                });
+            }
+
+            
             
         });
 
