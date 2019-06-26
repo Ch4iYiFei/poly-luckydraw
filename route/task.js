@@ -136,8 +136,7 @@ module.exports = {
     },
 
     openDraw: async function openDraw(ids,info){
-        var award_length = info.awards.length;
-        console.log(award_length);
+        //为了不边界判定info和id是否为空，把所有的东西都写入了return中，如果为空不执行
         function shuffle(a) {
             for (let i = a.length; i; i--) {
                 let j = Math.floor(Math.random() * i);
@@ -146,6 +145,8 @@ module.exports = {
             return a;
         }
         return Promise.all(shuffle(ids).map(async function(element){
+            var award_length = info.awards.length;
+            console.log(award_length);
             console.log(element);
             var res;
             if(award_length>=0){
