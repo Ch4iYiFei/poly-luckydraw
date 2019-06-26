@@ -78,8 +78,8 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
     });
 });
 
-router.post("/fetch/publish", (req,resback)=>{
-    console.log("/draw/fetch/publish");
+router.post("/fetch/publisher", (req,resback)=>{
+    console.log("/draw/fetch/publisher");
     console.log(req.body);
     var token = req.body.jwt;
     var publisher = jwt.decode(token,secret).iss;
@@ -200,8 +200,7 @@ router.post("/delete",(req,resback)=>{
                 console.log("删除了一个已经不存在的抽奖");
                 resback.send({error: "删除了不存在的抽奖"});
                 db.close();
-            }
-            if(deleter == find_result.publisher){
+            }else if(deleter == find_result.publisher){
                 console.log("是发布者发来的删除");
                 col_draw.deleteOne({draw_id: req.body.draw_id},(delete_err1, delete_result1)=>{
                     if(delete_err1) throw delete_err1;
