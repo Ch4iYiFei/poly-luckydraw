@@ -90,6 +90,12 @@ module.exports = {
     },
 
     sendModule: async function sendModule(draw_id,ids,info,response){
+        if(ids.length == 0){
+            console.log("没有id，不发送消息");
+            return Promise.resolve();
+        }
+            
+
         return Promise.all(ids.map(async function(element){
             console.log("开始发送消息");
             var messageData = {
@@ -136,7 +142,14 @@ module.exports = {
     },
 
     openDraw: async function openDraw(ids,info){
-        //为了不边界判定info和id是否为空，把所有的东西都写入了return中，如果为空不执行
+        if(ids.length == 0){
+            console.log("没有id，不进行循环");
+            return Promise.resolve();
+        }
+        var award_length = info.awards.length;
+        console.log(award_length);
+
+
         function shuffle(a) {
             for (let i = a.length; i; i--) {
                 let j = Math.floor(Math.random() * i);
@@ -145,8 +158,6 @@ module.exports = {
             return a;
         }
         return Promise.all(shuffle(ids).map(async function(element){
-            var award_length = info.awards.length;
-            console.log(award_length);
             console.log(element);
             var res;
             if(award_length>=0){

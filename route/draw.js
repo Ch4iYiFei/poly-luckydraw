@@ -155,6 +155,7 @@ router.post("/join", (req,resback)=>{
         //upsert在找不到drawid时insert，找不到时update,但是这种情况不可能发送
         col_draw.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiners: joiner}}, (update_err1,update_result1)=>{
             if(update_err1) throw update_err1;
+            console.log(update_result1);
             console.log("抽奖中更新用户成功");
             //...........
             col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId, result: null}, (insert_err,insert_result)=>{
