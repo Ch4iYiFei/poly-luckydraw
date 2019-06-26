@@ -269,7 +269,13 @@ router.post("/findResult",(req,resback)=>{
 
         var col = dbase.collection("draw");
         var col_joiner = dbase.collection("joiner");
-        //col_joiner.findOne({id: finder, draw_id: req.body.draw_id})
+        col_joiner.findOne({id: finder, draw_id: req.body.draw_id},{projection:{'result': 1,'_id': 0}},(find_err,find_result)=>{
+            if(find_err) throw find_err;
+
+            console.log(find_result);
+            resback.send(find_result);
+            db.close();
+        })
     });
 })
 
