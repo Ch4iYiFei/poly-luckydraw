@@ -188,6 +188,7 @@ module.exports = {
                     if(find_err) reject(find_err);
                     if(find_result.length == 0){
                         console.log("nmd已经被删除了");
+                        resolve();
                         db.close();
                     }else{
                         col.updateOne({id: draw_id},{$set:{isPublic: "false"}},(update_err,update_result)=>{
