@@ -50,9 +50,12 @@ module.exports = {
 
     messagesend: async function messagesend(draw_id){
         //其实感觉下面两个await可以并发，但是不知道怎么写
+
+        //ids可能为空，即没有抽奖者，或者被删除
         var ids = await this.getAllId(draw_id).catch((err)=>{
             throw err;
         });
+        //info可能为空，只有被删除时
         var info = await this.getDrawInfo(draw_id).catch((err)=>{
             throw err;
         });
@@ -65,14 +68,29 @@ module.exports = {
         console.log(response.access_token);
 
     
-        //处理没有抽奖着的问
+        //如果ids为空就无所谓，继续执行，不开奖
         await this.openDraw(ids,info).catch((err)=>{
             throw err;
         });
 
         console.log("如果没有返回promise会怎么样");
 
-        await Promise.all(ids.map(async function(element){
+        //如果ids为空也无所谓，不发送消息
+        await this.sendModule(draw_id,ids,info,body).catch((err)=>{
+            throw err;
+        })
+
+        console.log("说不定是空的promise。all也会运行完成");
+
+        //运行到这里有两种情况，要么是没有抽奖者，joiner表中为空，要么是两张表中都为空，都被删除了
+        await this.afterDraw(draw_id).catch((err)=>{
+            throw err;
+        });
+
+    },
+
+    sendModule: async function sendModule(draw_id,ids,info,response){
+        return Promise.all(ids.map(async function(element){
             console.log("开始发送消息");
             var messageData = {
                 "touser": element.id,
@@ -115,11 +133,7 @@ module.exports = {
             });
             
         }));
-
-        console.log("说不定是空的promise。all也会运行完成");
-
     },
-
 
     openDraw: async function openDraw(ids,info){
         var award_length = info.awards.length;
@@ -161,6 +175,33 @@ module.exports = {
         
     },
     
+    afterDraw: async function afterDraw(draw_id){
+        return new Promise((resolve,reject)=>{
+            console.log("开始进行private操作");
+            MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+                if(db_err) reject(db_err);
+                console.log("into resolve");
+                var dbase = db.db("lucky");
+                console.log("db connected");
+                var col = dbase.collection("draw");
+                col.findOne({draw_id: draw_id},(find_err,find_result)=>{
+                    if(find_err) reject(find_err);
+                    if(find_result.length == 0){
+                        console.log("nmd已经被删除了");
+                        db.close();
+                    }else{
+                        col.updateOne({id: draw_id},{$set:{isPublic: "false"}},(update_err,update_result)=>{
+                            if(update_err) reject(update_err);
+                            console.log("已经被设置为private");
+                            resolve(update_result);
+                            db.close();
+                        })
+                    }
+                })
+            })
+        })
+    },
+
     getToken: async function getToken(){
         var appid = "wx55bd9c881859ddb5";
         var appsecret = require("../AppSecret");

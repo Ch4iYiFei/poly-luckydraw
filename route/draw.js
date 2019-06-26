@@ -157,17 +157,13 @@ router.post("/join", (req,resback)=>{
             if(update_err1) throw update_err1;
             console.log("抽奖中更新用户成功");
             //...........
-            col_user.updateOne({id: joiner},{$addToSet:{draws: req.body.draw_id}}, (update_err2,update_result2)=>{
-                if(update_err2) throw update_err2;
-                console.log("用户中更新抽奖成功");
-                //...........
-                col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId, result: null}, (insert_err,insert_result)=>{
-                    if(insert_err) throw insert_err;
-                    console.log("加入formId成功");
-                    resback.send({error: null});
-                    db.close();
-                });
+            col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId, result: null}, (insert_err,insert_result)=>{
+                if(insert_err) throw insert_err;
+                console.log("加入formId成功");
+                resback.send({error: null});
+                db.close();
             });
+            
         });
 
         //一般find需要通过Toarray，findOne不需要
@@ -195,8 +191,9 @@ router.post("/delete",(req,resback)=>{
         var dbase = db.db("lucky");
         console.log("db connected");
 
-        var col = dbase.collection("draw");
-        col.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
+        var col_draw = dbase.collection("draw");
+        var col_joiner = dbase.collection("joiner");
+        col_draw.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
             if(find_err) throw find_err;
             console.log(find_result);
             if(!find_result){
@@ -206,11 +203,16 @@ router.post("/delete",(req,resback)=>{
             }
             if(deleter == find_result.publisher){
                 console.log("是发布者发来的删除");
-                col.deleteOne({draw_id: req.body.draw_id},(delete_err, delete_result)=>{
-                    if(delete_err) throw delete_err;
-                    console.log("删除抽奖成功");
-                    resback.send({error: null});
-                    db.close();
+                col_draw.deleteOne({draw_id: req.body.draw_id},(delete_err1, delete_result1)=>{
+                    if(delete_err1) throw delete_err1;
+                    console.log("删除draw表抽奖成功");
+                    col_joiner.deleteMany({draw_id: req.body.draw_id},(delete_err2, delete_result2)=>{
+                        if(delete_err2) throw delete_err2;
+                        console.log("formid全灭");
+                        resback.send({error: null});
+                        db.close();
+                    })
+                    
                 })
             }else
                 console.log("未知的删除者");
