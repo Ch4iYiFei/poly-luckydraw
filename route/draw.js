@@ -238,7 +238,7 @@ router.post("/findOne",(req,resback)=>{
             console.log(find_result_in_draw);
             if(!find_result_in_draw){
                 console.log("查询了一个已经不存在的抽奖");
-                resback.status(404).send({error: "查询了不存在的抽奖"});
+                resback.status(404).send({error: "该抽奖不存在或已被删除"});
                 db.close();
             }else{
                 console.log("查询抽奖成功");
