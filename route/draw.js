@@ -263,21 +263,20 @@ router.post("/findResult",(req,resback)=>{
 
 
 
-router.post("/fetch/publisher", (req,resback)=>{
-    console.log("/draw/fetch/publisher");
+router.post("/fetch/userDraw", (req,resback)=>{
+    console.log("/draw/fetch/userDraw");
     console.log(req.body);
     var token = req.body.jwt;
-    var publisher = jwt.decode(token,secret).iss;
+    var user = jwt.decode(token,secret).iss;
     //已经拥有的抽奖信息数量
-    var skipnum = req.body.num;
-    var limitnum = 2;
-    console.log("发布者",publisher);
+    //var skipnum = req.body.num;
+    //var limitnum = 2;
+    console.log("用户",user);
 
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
         if(db_err) throw db_err;
         var dbase = db.db("lucky");
         console.log("db connected");
-
 
         var col = dbase.collection("draw");
         //isPublic对发布者不是限制
@@ -296,23 +295,38 @@ router.get("/test",(req,resback)=>{
     console.log("/draw/test");
     var draw_id = "draw-34050ce0-94d2-11e9-b85e-f7377ee955d8";
     //messageSend(draw_id);
-    var date = new Date(2019, 5, 24, 19, 42, 0);
-    var date2 = new Date(2019, 6, 24, 19, 45, 0);
+    //var date = new Date(2019, 5, 24, 19, 42, 0);
+    //var date2 = new Date(2019, 6, 24, 19, 45, 0);
 
 
-    var j = schedule.scheduleJob(date,()=>{
-        // getAllId(draw_id).then(()=>{
-        //     console.log("执行完毕");
-        // })
-        console.log("真的想执行一次");
-    })
-    var k = schedule.scheduleJob(date2,()=>{
-        // getAllId(draw_id).then(()=>{
-        //     console.log("执行完毕");
-        // })
-        console.log("真的想执行一次");
-    })
-    resback.send({error: null});
+    // var j = schedule.scheduleJob(date,()=>{
+    //     // getAllId(draw_id).then(()=>{
+    //     //     console.log("执行完毕");
+    //     // })
+    //     console.log("真的想执行一次");
+    // })
+    // var k = schedule.scheduleJob(date2,()=>{
+    //     // getAllId(draw_id).then(()=>{
+    //     //     console.log("执行完毕");
+    //     // })
+    //     console.log("真的想执行一次");
+    // })
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky");
+        console.log("db connected");
+
+        var col = dbase.collection("draw");
+        //isPublic对发布者不是限制
+        col.find({"joiners":{$all:["oSv7E5EDu4PRZnVkUhbwGIG5uR6c"]}}).toArray((find_err,find_result)=>{
+            if(find_err)  throw find_err;
+            console.log(find_result);
+            resback.send(find_result);
+            db.close();
+        });
+    });
+    
+    //resback.send({error: null});
 });
 
 module.exports = router;
