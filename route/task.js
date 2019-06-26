@@ -29,7 +29,6 @@ module.exports = {
     },
 //可能会出现删除抽奖后的问题
 
-//之查询drawid链
     findAllTask: async function findAllTask(){
         return new Promise((resolve,reject)=>{
             console.log("去数据库获得所有的draw_id");
@@ -64,11 +63,14 @@ module.exports = {
         console.log(body);
         var response = JSON.parse(body);
         console.log(response.access_token);
+
     
         //处理没有抽奖着的问
         await this.openDraw(ids,info).catch((err)=>{
             throw err;
         });
+
+        console.log("如果没有返回promise会怎么样");
 
         await Promise.all(ids.map(async function(element){
             console.log("开始发送消息");
@@ -113,6 +115,9 @@ module.exports = {
             });
             
         }));
+
+        console.log("说不定是空的promise。all也会运行完成");
+
     },
 
 
@@ -143,12 +148,6 @@ module.exports = {
                     var dbase = db.db("lucky");
                     console.log("db connected");
                     var col = dbase.collection("joiner");
-                    // col.find({draw_id: draw_id}).toArray((find_err,find_result)=>{
-                    //     if(find_err) reject(find_err);
-                    //     console.log(find_result);
-                    //     resolve(find_result);
-                    //     db.close();
-                    // })
                     col.updateOne({id: element.id,draw_id: info.draw_id},{$set:{result: res}},(update_err,update_result)=>{
                         console.log("res是：",res);
                         if(update_err) reject(update_err);
