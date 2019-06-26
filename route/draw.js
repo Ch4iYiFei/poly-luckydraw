@@ -110,11 +110,11 @@ router.post("/fetch/public", (req,resback)=>{
     console.log("/draw/fetch/public");
     console.log(req.body);
     var token = req.body.jwt;
-    var publisher = jwt.decode(token,secret).iss;
+    var user = jwt.decode(token,secret).iss;
     //已经拥有的抽奖信息数量
     var skipnum = req.body.num;
     var limitnum = 2;
-    console.log("发布者",publisher);
+    console.log("使用者:",user);
 
     MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
         if(db_err) throw db_err;
@@ -256,6 +256,22 @@ router.post("/findOne",(req,resback)=>{
     });
 })
 
+router.post("/findResult",(req,resback)=>{
+    console.log("/draw/findResult");
+    console.log(req.body);
+    var token = req.body.jwt;
+    var finder = jwt.decode(token,secret).iss;
+
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky");
+        console.log("db connected");
+
+        var col = dbase.collection("draw");
+        var col_joiner = dbase.collection("joiner");
+        //col_joiner.findOne({id: finder, draw_id: req.body.draw_id})
+    });
+})
 
 
 router.get("/test",(req,resback)=>{

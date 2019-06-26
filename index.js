@@ -2,8 +2,8 @@ var express = require("express");
 var app = express();
 var fs = require("fs");
 
-var key = fs.readFileSync("2_gigs.leeg4ng.com.key");
-var cert = fs.readFileSync("1_gigs.leeg4ng.com_bundle.crt");
+var key = fs.readFileSync("2_www.mgxwz.com.key");
+var cert = fs.readFileSync("1_www.mgxwz.com_bundle.crt");
 
 var https = require("https");
 var schedule = require("node-schedule");
