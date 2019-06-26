@@ -273,20 +273,42 @@ router.post("/fetch/userDraw", (req,resback)=>{
     //var limitnum = 2;
     console.log("用户",user);
 
-    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
-        if(db_err) throw db_err;
-        var dbase = db.db("lucky");
-        console.log("db connected");
+        MongoClient.connect(db_url,{ useNewUrlParser: true }, async (db_err,db) => {
+            if(db_err) throw db_err;
+            var dbase = db.db("lucky");
+            console.log("db connected");
 
-        var col = dbase.collection("draw");
-        //isPublic对发布者不是限制
-        col.find({publisher: publisher}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
-            if(find_err)  throw find_err;
-            console.log(find_result);
-            resback.send(find_result);
+            var col_draw = dbase.collection("draw");
+            var col_joiner = dbase.collection("joiner");
+            
+            var joinedDraw = await new Promise((resolve,reject)=>{
+                col_draw.find({"joiners":{$all:[user]}}).toArray((find_err,find_result)=>{
+                    if(find_err) reject(find_err);
+                    //可能没参与过
+                    resolve(find_result);
+                })
+            }).catch((err)=>{throw err});
+
             db.close();
+            
+            resback.send(joinedDraw);
         });
-    });
+    
+
+    // MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+    //     if(db_err) throw db_err;
+    //     var dbase = db.db("lucky");
+    //     console.log("db connected");
+
+    //     var col = dbase.collection("draw");
+    //     //isPublic对发布者不是限制
+    //     col.find({publisher: publisher}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
+    //         if(find_err)  throw find_err;
+    //         console.log(find_result);
+    //         resback.send(find_result);
+    //         db.close();
+    //     });
+    // });
 
 });
 
