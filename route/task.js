@@ -198,7 +198,8 @@ module.exports = {
                 var col = dbase.collection("draw");
                 col.findOne({draw_id: draw_id},(find_err,find_result)=>{
                     if(find_err) reject(find_err);
-                    if(find_result.length == 0){
+                    //findOne判断为空使用其他方法,length会出现问题
+                    if(find_result == null){
                         console.log("nmd已经被删除了");
                         resolve();
                         db.close();
