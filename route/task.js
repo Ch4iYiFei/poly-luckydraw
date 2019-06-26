@@ -191,7 +191,7 @@ module.exports = {
                         resolve();
                         db.close();
                     }else{
-                        col.updateOne({id: draw_id},{$set:{isPublic: "false"}},(update_err,update_result)=>{
+                        col.updateOne({draw_id: draw_id},{$set:{isPublic: "false"}},(update_err,update_result)=>{
                             if(update_err) reject(update_err);
                             console.log("已经被设置为private");
                             resolve(update_result);
