@@ -240,17 +240,17 @@ router.post("/findOne",(req,resback)=>{
                 console.log("查询了一个已经不存在的抽奖");
                 resback.status(404).send({error: "查询了不存在的抽奖"});
                 db.close();
-            }
-            console.log("查询抽奖成功");
-            // resback.send(find_result);
-            // db.close();
-            col_joiner.findOne({id: finder, draw_id: req.body.draw_id},{projection:{'result': 1,'_id': 0}},(find_err,find_result_in_joiner)=>{
-                if(find_err) throw find_err;
+            }else{
+                console.log("查询抽奖成功");
+                col_joiner.findOne({id: finder, draw_id: req.body.draw_id},{projection:{'result': 1,'_id': 0}},(find_err,find_result_in_joiner)=>{
+                    if(find_err) throw find_err;
                 
-                console.log(find_result_in_joiner);
-                resback.send(Object.assign(find_result_in_draw,find_result_in_joiner));
-                db.close();
-            })
+                    console.log(find_result_in_joiner);
+                    resback.send(Object.assign(find_result_in_draw,find_result_in_joiner));
+                    db.close();
+                })
+            }
+            
         })
     });
 })
