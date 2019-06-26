@@ -72,7 +72,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
             if(insert_err) throw insert_err;
             console.log("插入抽奖成功");
             //...........
-            resback.send({error: null});
+            resback.send({error: null,draw_id: draw_id});
             db.close();
         })
     });

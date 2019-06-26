@@ -76,7 +76,7 @@ module.exports = {
         console.log("如果没有返回promise会怎么样");
 
         //如果ids为空也无所谓，不发送消息
-        await this.sendModule(draw_id,ids,info,body).catch((err)=>{
+        await this.sendModule(draw_id,ids,info,response).catch((err)=>{
             throw err;
         })
 
