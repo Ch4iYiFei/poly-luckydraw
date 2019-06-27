@@ -84,7 +84,7 @@ router.post("/fetch/public", (req,resback)=>{
     var token = req.body.jwt;
     var user = jwt.decode(token,secret).iss;
     //已经拥有的抽奖信息数量
-    var skipnum = req.body.num;
+    //var skipnum = req.body.num;
     var limitnum = 2;
     console.log("使用者:",user);
 
@@ -98,7 +98,7 @@ router.post("/fetch/public", (req,resback)=>{
         //此处的true可能对与引号有问题
         //优化排序的问题
         //优化一直fetch的问题
-        col.find({isPublic: "true"}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
+        col.find({isPublic: "true", draw_id: {$nin: req.body.owned}}).limit(limitnum).toArray((find_err,find_result)=>{
             if(find_err)  throw find_err;
             console.log(find_result);
             resback.send({arr: find_result});
@@ -395,7 +395,7 @@ router.get("/test",(req,resback)=>{
 
         var col = dbase.collection("draw");
 
-        col.find({draw_id: {$nin:["draw-0c38d050-9718-11e9-bfc0-05a544b74c07","draw-69ed28c0-96e8-11e9-8381-11edc3368d2a"]}}).toArray((find_err,find_result)=>{
+        col.find({draw_id: {$nin:[]}}).toArray((find_err,find_result)=>{
             if(find_err) throw find_err;
             console.log("sgffdggdgf");
             resback.send(find_result);
