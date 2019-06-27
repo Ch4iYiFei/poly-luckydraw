@@ -300,7 +300,7 @@ router.post("/fetch/userDraw", (req,resback)=>{
                 col_joiner.aggregate([
                     {$match:
                         {
-                            id: "oSv7E5EDu4PRZnVkUhbwGIG5uR6c",
+                            id: user,
                             result: {$gte: 0}
                         }
         
@@ -320,6 +320,8 @@ router.post("/fetch/userDraw", (req,resback)=>{
                 })
             }).catch((err)=>{throw err});
 
+
+            //可能会对一个空的数组map
             let luckyArr = awardList.map((val, index, arr) => {
                 return val.detached[0];
             })
