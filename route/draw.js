@@ -371,7 +371,7 @@ router.get("/test",(req,resback)=>{
         ]).toArray((agg_err,agg_result)=>{
             if(agg_err) throw agg_err;
             resback.send(agg_result);
-            console.log(JSON.stringify(res));
+            console.log(JSON.stringify(agg_result));
             db.close();
         })
 
