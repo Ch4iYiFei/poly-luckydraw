@@ -54,7 +54,7 @@ router.post("/login", (req, resback) => {
                         if(find_result.length == 0){
                             console.log("之前未登录的用户");
                             //可增加更多的insert项
-                            col.insertOne({ id:response.openid },(insert_err,insert_result)=>{
+                            col.insertOne({ id:response.openid, name: null, phone: null, address: null, zipcode: null},(insert_err,insert_result)=>{
                                 if(insert_err) throw insert_err;
                                 console.log("插入用户成功");
                             })
@@ -127,8 +127,33 @@ router.post("/userInfo",(req,resback)=>{
         if(db_err) throw db_err;
         var dbase = db.db("lucky"); 
         console.log("db connected");
-        col = dbase.collection("user");
-        //col.find({})
+        var col = dbase.collection("user");
+        col.findOne({id: user},(find_err,find_result)=>{
+            if(find_err) throw find_err;
+            console.log("过来拿信息的");
+            resback.send(find_result);
+            db.close();
+        })
+    })
+});
+
+router.post("/infoEdit",(req,resback)=>{
+    console.log("/user/infoEdit");
+    var token = req.body.jwt;
+    var user = jwt.decode(token,secret).iss;
+
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky"); 
+        console.log("db connected");
+        var col = dbase.collection("user");
+
+        col.updateOne({id: user},{$set: {name: req.body.name, phone:req.body.phone, address: req.body.address, zipcode: req.body.zipcode}},(update_err,update_result)=>{
+            if(update_err) throw update_err;
+            console.log("修改信息");
+            resback.send({error: null});
+            db.close();
+        })
     })
 });
 
