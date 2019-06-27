@@ -289,9 +289,21 @@ router.post("/fetch/userDraw", (req,resback)=>{
                 })
             }).catch((err)=>{throw err});
 
-            db.close();
+            var publishedDraw = await new Promise((reslove,reject)=>{
+                col_draw.find({draw_id: user}).toArray((find_err,find_result)=>{
+                    if(find_err) reject(find_err);
+                    reslove(find_result);
+                })
+            }).catch((err)=>{throw err});
+
+            var awardList = await new Promise((reslove,reject)=>{
+                col_joiner.find({result: {$gte: 0}}).toArray((find_err,find_result)=>{
+                    if(find_err) reject(find_err);
+                })
+            })
+            //db.close();
             
-            resback.send(joinedDraw);
+            //resback.send(joinedDraw);
         });
     
 
@@ -338,14 +350,31 @@ router.get("/test",(req,resback)=>{
         var dbase = db.db("lucky");
         console.log("db connected");
 
-        var col = dbase.collection("draw");
+        var col = dbase.collection("joiner");
         //isPublic对发布者不是限制
-        col.find({"joiners":{$all:["oSv7E5EDu4PRZnVkUhbwGIG5uR6c"]}}).toArray((find_err,find_result)=>{
-            if(find_err)  throw find_err;
-            console.log(find_result);
-            resback.send(find_result);
+        // col.find({"joiners":{$all:["oSv7E5EDu4PRZnVkUhbwGIG5uR6c"]}}).toArray((find_err,find_result)=>{
+        //     if(find_err)  throw find_err;
+        //     console.log(find_result);
+        //     resback.send(find_result);
+        //     db.close();
+        // });
+        col.aggregate([
+            {$lookup:
+                {
+                    from: "draw",
+                    localField: "draw_id",
+                    foreignField: "draw_id",
+                    as: "detached"
+                }
+
+            }
+        ]).toArray((agg_err,agg_result)=>{
+            if(agg_err) throw agg_err;
+            resback.send(agg_result);
+            console.log(JSON.stringify(res));
             db.close();
-        });
+        })
+
     });
     
     //resback.send({error: null});
