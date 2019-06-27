@@ -393,7 +393,14 @@ router.get("/test",(req,resback)=>{
         var dbase = db.db("lucky");
         console.log("db connected");
 
-        var col = dbase.collection("joiner");
+        var col = dbase.collection("draw");
+
+        col.find({draw_id: {$nin:["draw-0c38d050-9718-11e9-bfc0-05a544b74c07","draw-69ed28c0-96e8-11e9-8381-11edc3368d2a"]}}).toArray((find_err,find_result)=>{
+            if(find_err) throw find_err;
+            console.log("sgffdggdgf");
+            resback.send(find_result);
+            db.close();
+        });
         //isPublic对发布者不是限制
         // col.find({"joiners":{$all:["oSv7E5EDu4PRZnVkUhbwGIG5uR6c"]}}).toArray((find_err,find_result)=>{
         //     if(find_err)  throw find_err;
@@ -401,29 +408,7 @@ router.get("/test",(req,resback)=>{
         //     resback.send(find_result);
         //     db.close();
         // });
-        col.aggregate([
-            {$match:
-                {
-                    id: "oSv7E5EDu4PRZnVkUhbwGIG5uR6c",
-                    result: {$gte: 0}
-                }
-
-            },
-            {$lookup:
-                {
-                    from: "draw",
-                    localField: "draw_id",
-                    foreignField: "draw_id",
-                    as: "detached"
-                }
-
-            }
-        ]).toArray((agg_err,agg_result)=>{
-            if(agg_err) throw agg_err;
-            resback.send(agg_result);
-            console.log(JSON.stringify(agg_result));
-            db.close();
-        })
+        
 
     });
     
