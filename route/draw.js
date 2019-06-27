@@ -290,7 +290,7 @@ router.post("/fetch/userDraw", (req,resback)=>{
             }).catch((err)=>{throw err});
 
             var publishedDraw = await new Promise((reslove,reject)=>{
-                col_draw.find({draw_id: user}).toArray((find_err,find_result)=>{
+                col_draw.find({publisher: user}).toArray((find_err,find_result)=>{
                     if(find_err) reject(find_err);
                     reslove(find_result);
                 })
