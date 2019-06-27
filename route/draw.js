@@ -114,7 +114,7 @@ router.post("/join", (req,resback)=>{
     var joiner = jwt.decode(token,secret).iss;
     console.log("参与者",joiner);
 
-    MongoClient.connect(db_url,{ useNewUrlParser: true }, (db_err,db) => {
+    MongoClient.connect(db_url,{ useNewUrlParser: true }, async (db_err,db) => {
         if(db_err) throw db_err;
         var dbase = db.db("lucky");
         console.log("db connected");
@@ -126,49 +126,43 @@ router.post("/join", (req,resback)=>{
 
         //addToSet不会添加重复的joiner,
         //upsert在找不到drawid时insert，找不到时update,但是这种情况不可能发送
-        col_draw.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiners: joiner}},async (update_err1,update_result1)=>{
-            if(update_err1) throw update_err1;
-            //console.log(update_result1);
-            console.log("抽奖中更新用户成功");
-            //...........
-            var info = await new Promise((resolve,reject)=>{
-                col_draw.findOne({draw_id: req.body.draw_id},(find_err,find_result)=>{
-                    if(find_err) reject(find_err);
-                    console.log("不得已只能去查询一下draw表，updateResult太垃圾了");
-                    resolve(find_result);
+
+        var info = await new Promise((resolve,reject)=>{
+            col_draw.findOne({draw_id: req.body.draw_id},(find_err,find_result)=>{
+                if(find_err) reject(find_err);
+                console.log("不得已只能去查询一下draw表，updateResult太垃圾了");
+                resolve(find_result);
+            })
+        }).catch((err)=>{throw err});
+
+        if(info == null){
+            console.log("没找到这个抽奖，却还有人想抽奖");
+            resback.status(404).send({error: "该抽奖不存在或已被删除"});
+            db.close();
+        }else if(!timeCheck(info)){
+            console.log("时间过le还抽奖？？？");
+            resback.status(404).send({error: "该抽奖已经已开奖，去看看别的吧"});
+            db.close();
+        }else{
+            await new Promise((resolve,reject)=>{
+                col_draw.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiners: joiner}},(update_err,update_result)=>{
+                    if(update_err) reject(update_err);
+                    console.log("抽奖中更新用户成功");
+                    resolve(update_result);
                 })
-            }).catch((err)=>{throw err});
-
-            if(update_result1.result.n==0){
-                console.log("没找到这个抽奖，却还有人想抽奖");
-                resback.status(404).send({error: "该抽奖不存在或已被删除"});
-                db.close();
-            }else if(!timeCheck(info)){
-                console.log("时间过le还抽奖？？？");
-                resback.status(404).send({error: "该抽奖已经已开奖，去看看别的吧"});
-                db.close();
-            }else{
+            })
+            await new Promise((resolve,reject)=>{
                 col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId, result: null}, (insert_err,insert_result)=>{
-                    if(insert_err) throw insert_err;
+                    if(insert_err) reject(insert_err);
                     console.log("加入formId成功");
-                    resback.send({error: null});
-                    db.close();
+                    resolve(insert_result);
                 });
-            }
-
-            
-            
-        });
+            })
+            resback.send({error: null});
+            db.close();
+        }
 
         //一般find需要通过Toarray，findOne不需要
-        // col.findOne({draw_id: req.body.draw_id}, (find_err,find_result)=>{
-        //     if(find_err) throw find_err;
-        //     console.log(find_result);
-        //     console.log(find_result.draw_id);
-        //     console.log(find_result.joiners);
-        //     resback.send(find_result.joiners);
-        //     db.close();
-        // })
         
     });
 });
