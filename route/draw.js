@@ -359,6 +359,13 @@ router.get("/test",(req,resback)=>{
         //     db.close();
         // });
         col.aggregate([
+            {$match:
+                {
+                    id: "oSv7E5EDu4PRZnVkUhbwGIG5uR6c",
+                    result: {$gte: 0}
+                }
+
+            },
             {$lookup:
                 {
                     from: "draw",
