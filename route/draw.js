@@ -320,8 +320,12 @@ router.post("/fetch/userDraw", (req,resback)=>{
                 })
             }).catch((err)=>{throw err});
 
+            let luckyArr = awardList.map((val, index, arr) => {
+                return val.detached[0];
+            })
+
             db.close();
-            var sendObj = {joinArr: joinedDraw,publishArr: publishedDraw,luckyArr: awardList};
+            var sendObj = {joinArr: joinedDraw,publishArr: publishedDraw,luckyArr: luckyArr};
             
             console.log("送了一大堆出去");
             resback.send(sendObj);
