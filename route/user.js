@@ -118,4 +118,18 @@ router.post("/login", (req, resback) => {
     }
 });
 
+
+router.post("/userInfo",(req,resback)=>{
+    console.log("/user/userInfo");
+    var token = req.body.jwt;
+    var user = jwt.decode(token,secret).iss;
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky"); 
+        console.log("db connected");
+        col = dbase.collection("user");
+        //col.find({})
+    })
+});
+
 module.exports = router;

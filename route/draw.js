@@ -180,7 +180,11 @@ router.post("/delete",(req,resback)=>{
             console.log(find_result);
             if(find_result == null){
                 console.log("删除了一个已经不存在的抽奖");
-                resback.send({error: "删除了不存在的抽奖"});
+                resback.status(404).send({error: "删除了不存在的抽奖"});
+                db.close();
+            }else if(!timeCheck(find_result)){
+                console.log("时间已经过了，不能删除");
+                resback.status(404).send({error:"不能删除已经开奖的抽奖"});
                 db.close();
             }else if(deleter == find_result.publisher){
                 console.log("是发布者发来的删除");
@@ -351,6 +355,18 @@ router.post("/fetch/userDraw", (req,resback)=>{
 
 });
 
+
+function timeCheck(result){
+    var date_arr = result.date.split("-");
+    var time_arr = result.time.split(":");
+    var date = new Date(date_arr[0],date_arr[1]-1,date_arr[2],time_arr[0],time_arr[1]);
+    var dateNow = new Date();
+    if(date.getTime()<dateNow.getTime()){
+        return false;
+    }else{
+        return true;
+    }
+}
 
 router.get("/test",(req,resback)=>{
     console.log("/draw/test");
