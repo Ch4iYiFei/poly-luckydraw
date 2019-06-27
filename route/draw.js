@@ -297,13 +297,34 @@ router.post("/fetch/userDraw", (req,resback)=>{
             }).catch((err)=>{throw err});
 
             var awardList = await new Promise((reslove,reject)=>{
-                col_joiner.find({result: {$gte: 0}}).toArray((find_err,find_result)=>{
-                    if(find_err) reject(find_err);
+                col_joiner.aggregate([
+                    {$match:
+                        {
+                            id: "oSv7E5EDu4PRZnVkUhbwGIG5uR6c",
+                            result: {$gte: 0}
+                        }
+        
+                    },
+                    {$lookup:
+                        {
+                            from: "draw",
+                            localField: "draw_id",
+                            foreignField: "draw_id",
+                            as: "detached"
+                        }
+                    }
+                ]).toArray((agg_err,agg_result)=>{
+                    if(agg_err) reject(agg_err);
+                    //console.log(JSON.stringify(agg_result));
+                    reslove(agg_result)
                 })
-            })
-            //db.close();
+            }).catch((err)=>{throw err});
+
+            db.close();
+            var sendObj = {joinArr: joinedDraw,publishArr: publishedDraw,luckyArr: awardList};
             
-            //resback.send(joinedDraw);
+            console.log("送了一大堆出去");
+            resback.send(sendObj);
         });
     
 
