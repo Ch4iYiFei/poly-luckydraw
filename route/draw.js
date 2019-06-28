@@ -175,7 +175,7 @@ router.post("/join", (req,resback)=>{
             await new Promise((resolve,reject)=>{
                 col_user.updateOne({id: joiner},{$inc:{chance: -1}},(update_err,update_result)=>{
                     if(update_err) reject(update_err);
-                    console,log("抽奖次数减1");
+                    console.log("抽奖次数减1");
                     resolve(update_result);
                 })
             }).catch((err)=>{throw err});
