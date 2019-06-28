@@ -333,7 +333,7 @@ router.post("/fetch/userDraw", (req,resback)=>{
 
             //可能会对一个空的数组map
             let luckyArr = awardList.map((val, index, arr) => {
-                return val.detached[0];
+                return Object.assign(val.detached[0],val.result);
             })
 
             db.close();
