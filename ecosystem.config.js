@@ -22,7 +22,7 @@ module.exports = {
       ref  : 'origin/master',
       repo : 'git@github.com:Ch4iYiFei/poly-luckydraw.git',
       path : '/root/test',
-      'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
+      'post-deploy' : 'pm2 reload ecosystem.config.js --env production'//此处删除npm install节省时间
     }
   }
 };

@@ -316,45 +316,11 @@ router.post("/fetch/userDraw", (req,resback)=>{
             var col_draw = dbase.collection("draw");
             var col_joiner = dbase.collection("joiner");
             
-            var joinedDraw = await new Promise((resolve,reject)=>{
-                col_draw.find({"joiners":{$all:[user]}}).toArray((find_err,find_result)=>{
-                    if(find_err) reject(find_err);
-                    //可能没参与过
-                    resolve(find_result);
-                })
-            }).catch((err)=>{throw err});
+            var joinedDraw = await findJoinedDraw(col_draw,user).catch((err)=>{throw err});
 
-            var publishedDraw = await new Promise((reslove,reject)=>{
-                col_draw.find({publisher: user}).toArray((find_err,find_result)=>{
-                    if(find_err) reject(find_err);
-                    reslove(find_result);
-                })
-            }).catch((err)=>{throw err});
+            var publishedDraw = await findPublishedDraw(col_draw,user).catch((err)=>{throw err});
 
-            var awardList = await new Promise((reslove,reject)=>{
-                col_joiner.aggregate([
-                    {$match:
-                        {
-                            id: user,
-                            result: {$gte: 0}
-                        }
-        
-                    },
-                    {$lookup:
-                        {
-                            from: "draw",
-                            localField: "draw_id",
-                            foreignField: "draw_id",
-                            as: "detached"
-                        }
-                    }
-                ]).toArray((agg_err,agg_result)=>{
-                    if(agg_err) reject(agg_err);
-                    //console.log(JSON.stringify(agg_result));
-                    reslove(agg_result)
-                })
-            }).catch((err)=>{throw err});
-
+            var awardList = await getAwardList(col_joiner,user).catch((err)=>{throw err});
 
             //可能会对一个空的数组map
             let luckyArr = awardList.map((val, index, arr) => {
@@ -367,24 +333,114 @@ router.post("/fetch/userDraw", (req,resback)=>{
             console.log("送了一大堆出去");
             resback.send(sendObj);
         });
-    
-
-    // MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
-    //     if(db_err) throw db_err;
-    //     var dbase = db.db("lucky");
-    //     console.log("db connected");
-
-    //     var col = dbase.collection("draw");
-    //     //isPublic对发布者不是限制
-    //     col.find({publisher: publisher}).skip(skipnum).limit(limitnum).toArray((find_err,find_result)=>{
-    //         if(find_err)  throw find_err;
-    //         console.log(find_result);
-    //         resback.send(find_result);
-    //         db.close();
-    //     });
-    // });
 
 });
+
+router.post("/fetch/joinedDraw",(req,resback)=>{
+    console.log("/draw/fetch/joinedDraw");
+    console.log(req.body);
+    var token = req.body.jwt;
+    var user = jwt.decode(token,secret).iss;
+    console.log("用户",user);
+    MongoClient.connect(db_url,{ useNewUrlParser: true }, async (db_err,db) => {
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky");
+        console.log("db connected");
+        var col_draw = dbase.collection("draw");
+        var joinedDraw = await findJoinedDraw(col_draw,user).catch((err)=>{throw err});
+        var object = {joinArr: joinedDraw};
+        db.close();
+        console.log("送出了参加的抽奖");
+        resback.send(object);
+    });
+})
+
+router.post("/fetch/publishedDraw",(req,resback)=>{
+    console.log("/draw/fetch/publishedDraw");
+    console.log(req.body);
+    var token = req.body.jwt;
+    var user = jwt.decode(token,secret).iss;
+    console.log("用户",user);
+    MongoClient.connect(db_url,{ useNewUrlParser: true }, async (db_err,db) => {
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky");
+        console.log("db connected");
+        var col_draw = dbase.collection("draw");
+        var publishedDraw = await findPublishedDraw(col_draw,user).catch((err)=>{throw err});
+        var object = {publishArr: publishedDraw};
+        db.close();
+        console.log("送出了发布的抽奖");
+        resback.send(object);
+    });
+})
+
+
+router.post("/fetch/awardList",(req,resback)=>{
+    console.log("/draw/fetch/awardList");
+    console.log(req.body);
+    var token = req.body.jwt;
+    var user = jwt.decode(token,secret).iss;
+    console.log("用户",user);
+    MongoClient.connect(db_url,{ useNewUrlParser: true }, async (db_err,db) => {
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky");
+        console.log("db connected");
+        var col_joiner = dbase.collection("joiner");
+        var awardList = await getAwardList(col_joiner,user).catch((err)=>{throw err});
+        let luckyArr = awardList.map((val, index, arr) => {
+            return Object.assign(val.detached[0],{result: val.result});
+        });
+        var object = {luckyArr: luckyArr};
+        db.close();
+        console.log("送出了奖品列表");
+        resback.send(object);
+    });
+})
+
+async function findJoinedDraw(col,user){
+    return new Promise((resolve,reject)=>{
+        col.find({"joiners":{$all:[user]}}).toArray((find_err,find_result)=>{
+            if(find_err) reject(find_err);
+            //可能没参与过
+            resolve(find_result);
+        })
+    });
+}
+
+async function findPublishedDraw(col,user){
+    return new Promise((reslove,reject)=>{
+        col.find({publisher: user}).toArray((find_err,find_result)=>{
+            if(find_err) reject(find_err);
+            reslove(find_result);
+        })
+    });
+}
+
+async function getAwardList(col,user){
+    return new Promise((reslove,reject)=>{
+        col.aggregate([
+            {$match:
+                {
+                    id: user,
+                    result: {$gte: 0}
+                }
+
+            },
+            {$lookup:
+                {
+                    from: "draw",
+                    localField: "draw_id",
+                    foreignField: "draw_id",
+                    as: "detached"
+                }
+            }
+        ]).toArray((agg_err,agg_result)=>{
+            if(agg_err) reject(agg_err);
+            //console.log(JSON.stringify(agg_result));
+            reslove(agg_result);
+        })
+    });
+}
 
 
 function timeCheck(result){
