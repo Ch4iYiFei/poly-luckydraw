@@ -314,7 +314,7 @@ router.post("/fetch/userDraw", (req,resback)=>{
             var col_joiner = dbase.collection("joiner");
             
             var joinedDraw = await new Promise((resolve,reject)=>{
-                col_draw.find({"joiners":{$all:[user]}}).sort({date: 1}).toArray((find_err,find_result)=>{
+                col_draw.find({"joiners":{$all:[user]}}).toArray((find_err,find_result)=>{
                     if(find_err) reject(find_err);
                     //可能没参与过
                     resolve(find_result);
@@ -322,7 +322,7 @@ router.post("/fetch/userDraw", (req,resback)=>{
             }).catch((err)=>{throw err});
 
             var publishedDraw = await new Promise((reslove,reject)=>{
-                col_draw.find({publisher: user}).sort({date: 1}).toArray((find_err,find_result)=>{
+                col_draw.find({publisher: user}).toArray((find_err,find_result)=>{
                     if(find_err) reject(find_err);
                     reslove(find_result);
                 })
