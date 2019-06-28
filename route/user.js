@@ -177,4 +177,24 @@ router.post("/addDrawChance",(req,resback)=>{
     })
 })
 
+router.post("/chanceNum",(req,resback)=>{
+    console.log("/user/chanceNum");
+    var token = req.body.jwt;
+    var user = jwt.decode(token,secret).iss;
+
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky"); 
+        console.log("db connected");
+        var col = dbase.collection("user");
+
+        col.findOne({id: user},{projection:{chance: 1, _id: 0}},(find_err,find_result)=>{
+            if(find_err) throw find_err;
+            console.log("拿抽奖次数");
+            resback.send(find_result);
+            db.close();
+        })
+    })
+})
+
 module.exports = router;
