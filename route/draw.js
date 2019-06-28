@@ -432,12 +432,12 @@ router.get("/test",(req,resback)=>{
         let luckyArr = awardList.map((val, index, arr) => {
             console.log(val.result);
             console.log(val.detached[0]);
-            var res = Object.assign(val.detached[0],val.result);
+            var res = Object.assign(val.detached[0],{"result:": val.result});
             console.log(res);
             return res;
         })
 
-        
+
         resback.send(luckyArr);
         // col.find({draw_id: {$nin:[]}}).toArray((find_err,find_result)=>{
         //     if(find_err) throw find_err;
