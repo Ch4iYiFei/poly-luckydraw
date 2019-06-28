@@ -168,7 +168,7 @@ router.post("/addDrawChance",(req,resback)=>{
         console.log("db connected");
         var col = dbase.collection("user");
 
-        col.updateOne({id: user},{$inc:{chance: req.body.time}},(update_err,update_result)=>{
+        col.updateOne({id: user},{$inc:{chance: req.body.number}},(update_err,update_result)=>{
             if(update_err) throw update_err;
             console.log("增加更新的次数");
             resback.send({error: null});
