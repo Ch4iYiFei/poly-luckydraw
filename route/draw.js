@@ -406,7 +406,7 @@ router.get("/test",(req,resback)=>{
             col_joiner.aggregate([
                 {$match:
                     {
-                        id: user,
+                        id: "oSv7E5EDu4PRZnVkUhbwGIG5uR6c",
                         result: {$gte: 0}
                     }
     
