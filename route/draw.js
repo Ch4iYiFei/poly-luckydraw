@@ -149,6 +149,7 @@ router.post("/join", (req,resback)=>{
             col_user.findOne({id: joiner},(find_err,find_result)=>{
                 if(find_err) reject(find_err);
                 console.log("正在查询user表的抽奖次数");
+                console.log(find_result);
                 resolve(find_result.chance);
             })
         }).catch((err)=>{throw err});
