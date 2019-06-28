@@ -54,7 +54,7 @@ router.post("/login", (req, resback) => {
                         if(find_result.length == 0){
                             console.log("之前未登录的用户");
                             //可增加更多的insert项
-                            col.insertOne({ id:response.openid, name: "", phone: "", address: "", zipcode: "", chance: 1},(insert_err,insert_result)=>{
+                            col.insertOne({ id:response.openid, name: "", phone: "", address: "", zipcode: "", chance: 50},(insert_err,insert_result)=>{
                                 if(insert_err) throw insert_err;
                                 console.log("插入用户成功");
                             })
