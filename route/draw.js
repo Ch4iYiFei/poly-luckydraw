@@ -333,7 +333,7 @@ router.post("/fetch/userDraw", (req,resback)=>{
 
             //可能会对一个空的数组map
             let luckyArr = awardList.map((val, index, arr) => {
-                return Object.assign(val.detached[0],val.result);
+                return Object.assign(val.detached[0],{result: val.result});
             })
 
             db.close();
@@ -432,7 +432,7 @@ router.get("/test",(req,resback)=>{
         let luckyArr = awardList.map((val, index, arr) => {
             console.log(val.result);
             console.log(val.detached[0]);
-            var res = Object.assign(val.detached[0],{"result:": val.result});
+            var res = Object.assign(val.detached[0],{result: val.result});
             console.log(res);
             return res;
         })
