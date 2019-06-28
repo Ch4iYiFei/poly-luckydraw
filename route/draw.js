@@ -155,7 +155,7 @@ router.post("/join", (req,resback)=>{
             
             if(chance<=0){
                 console.log("没次数了还想抽奖？？？");
-                resback.status(404).send({error: "没有抽奖次数了，分享抽奖得到更多次数"});
+                resback.status(403).send({error: "没有抽奖次数了，分享抽奖得到更多次数"});
                 db.close();
             }else{
                 await new Promise((resolve,reject)=>{
