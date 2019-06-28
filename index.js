@@ -19,6 +19,8 @@ var date = new Date();
 console.log(date.getTimezoneOffset());
 console.log(date.toLocaleString());
 
+console.log("pm2 test");
+
 var task = require("./route/task");
 task.doThemAll();
 
