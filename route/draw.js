@@ -394,19 +394,52 @@ router.get("/test",(req,resback)=>{
     //     // })
     //     console.log("真的想执行一次");
     // })
-    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+    MongoClient.connect(db_url,{ useNewUrlParser: true },async (db_err,db) => {
         if(db_err) throw db_err;
         var dbase = db.db("lucky");
         console.log("db connected");
 
         var col = dbase.collection("draw");
+        var col_joiner = dbase.collection("joiner");
 
-        col.find({draw_id: {$nin:[]}}).toArray((find_err,find_result)=>{
-            if(find_err) throw find_err;
-            console.log("sgffdggdgf");
-            resback.send(find_result);
-            db.close();
-        });
+        var awardList = await new Promise((reslove,reject)=>{
+            col_joiner.aggregate([
+                {$match:
+                    {
+                        id: user,
+                        result: {$gte: 0}
+                    }
+    
+                },
+                {$lookup:
+                    {
+                        from: "draw",
+                        localField: "draw_id",
+                        foreignField: "draw_id",
+                        as: "detached"
+                    }
+                }
+            ]).toArray((agg_err,agg_result)=>{
+                if(agg_err) reject(agg_err);
+                //console.log(JSON.stringify(agg_result));
+                reslove(agg_result)
+            })
+        }).catch((err)=>{throw err});
+
+        console.log(awardList);
+
+        //可能会对一个空的数组map
+        let luckyArr = awardList.map((val, index, arr) => {
+            return Object.assign(val.detached[0],val.result);
+        })
+
+        resback.send(luckyArr);
+        // col.find({draw_id: {$nin:[]}}).toArray((find_err,find_result)=>{
+        //     if(find_err) throw find_err;
+        //     console.log("sgffdggdgf");
+        //     resback.send(find_result);
+        //     db.close();
+        // });
         //isPublic对发布者不是限制
         // col.find({"joiners":{$all:["oSv7E5EDu4PRZnVkUhbwGIG5uR6c"]}}).toArray((find_err,find_result)=>{
         //     if(find_err)  throw find_err;
