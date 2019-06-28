@@ -54,7 +54,7 @@ router.post("/login", (req, resback) => {
                         if(find_result.length == 0){
                             console.log("之前未登录的用户");
                             //可增加更多的insert项
-                            col.insertOne({ id:response.openid, name: "", phone: "", address: "", zipcode: ""},(insert_err,insert_result)=>{
+                            col.insertOne({ id:response.openid, name: "", phone: "", address: "", zipcode: "", chance: 1},(insert_err,insert_result)=>{
                                 if(insert_err) throw insert_err;
                                 console.log("插入用户成功");
                             })
@@ -156,5 +156,25 @@ router.post("/infoEdit",(req,resback)=>{
         })
     })
 });
+
+router.post("/addDrawChance",(req,resback)=>{
+    console.log("/user/addDrawChance");
+    var token = req.body.jwt;
+    var user = jwt.decode(token,secret).iss;
+
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky"); 
+        console.log("db connected");
+        var col = dbase.collection("user");
+
+        col.updateOne({id: user},{$inc:{chance: req.body.time}},(update_err,update_result)=>{
+            if(update_err) throw update_err;
+            console.log("增加更新的次数");
+            resback.send({error: null});
+            db.close();
+        })
+    })
+})
 
 module.exports = router;
