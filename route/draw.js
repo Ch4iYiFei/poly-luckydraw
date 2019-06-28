@@ -98,7 +98,7 @@ router.post("/fetch/public", (req,resback)=>{
         //此处的true可能对与引号有问题
         //优化排序的问题
         //优化一直fetch的问题
-        col.find({isPublic: "true", draw_id: {$nin: req.body.owned}}).sort({date: -1}).limit(limitnum).toArray((find_err,find_result)=>{
+        col.find({isPublic: "true", draw_id: {$nin: req.body.owned}}).sort({date: 1}).limit(limitnum).toArray((find_err,find_result)=>{
             if(find_err)  throw find_err;
             console.log(find_result);
             resback.send({arr: find_result});
@@ -314,7 +314,7 @@ router.post("/fetch/userDraw", (req,resback)=>{
             var col_joiner = dbase.collection("joiner");
             
             var joinedDraw = await new Promise((resolve,reject)=>{
-                col_draw.find({"joiners":{$all:[user]}}).sort({date: -1}).toArray((find_err,find_result)=>{
+                col_draw.find({"joiners":{$all:[user]}}).sort({date: 1}).toArray((find_err,find_result)=>{
                     if(find_err) reject(find_err);
                     //可能没参与过
                     resolve(find_result);
@@ -322,7 +322,7 @@ router.post("/fetch/userDraw", (req,resback)=>{
             }).catch((err)=>{throw err});
 
             var publishedDraw = await new Promise((reslove,reject)=>{
-                col_draw.find({publisher: user}).sort({date: -1}).toArray((find_err,find_result)=>{
+                col_draw.find({publisher: user}).sort({date: 1}).toArray((find_err,find_result)=>{
                     if(find_err) reject(find_err);
                     reslove(find_result);
                 })
