@@ -143,47 +143,49 @@ router.post("/join", (req,resback)=>{
             console.log("时间过le还抽奖？？？");
             resback.status(404).send({error: "该抽奖已经已开奖，去看看别的吧"});
             db.close();
-        }
-        
-        var chance = await new Promise((resolve,reject)=>{
-            col_user.findOne({id: joiner},(find_err,find_result)=>{
-                if(find_err) reject(find_err);
-                console.log("正在查询user表的抽奖次数");
-                console.log(find_result);
-                resolve(find_result.chance);
-            })
-        }).catch((err)=>{throw err});
-        
-        if(chance<=0){
-            console.log("没次数了还想抽奖？？？");
-            resback.status(404).send({error: "没有抽奖次数了，分享抽奖得到更多次数"});
-            db.close();
         }else{
-            await new Promise((resolve,reject)=>{
-                col_draw.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiners: joiner}},(update_err,update_result)=>{
-                    if(update_err) reject(update_err);
-                    console.log("抽奖中更新用户成功");
-                    resolve(update_result);
-                })
-            }).catch((err)=>{throw err});
-            await new Promise((resolve,reject)=>{
-                col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId, result: null}, (insert_err,insert_result)=>{
-                    if(insert_err) reject(insert_err);
-                    console.log("加入formId成功");
-                    resolve(insert_result);
-                });
-            }).catch((err)=>{throw err});
-            await new Promise((resolve,reject)=>{
-                col_user.updateOne({id: joiner},{$inc:{chance: -1}},(update_err,update_result)=>{
-                    if(update_err) reject(update_err);
-                    console.log("抽奖次数减1");
-                    resolve(update_result);
+            var chance = await new Promise((resolve,reject)=>{
+                col_user.findOne({id: joiner},(find_err,find_result)=>{
+                    if(find_err) reject(find_err);
+                    console.log("正在查询user表的抽奖次数");
+                    console.log(find_result);
+                    resolve(find_result.chance);
                 })
             }).catch((err)=>{throw err});
             
-            resback.send({error: null});
-            db.close();
+            if(chance<=0){
+                console.log("没次数了还想抽奖？？？");
+                resback.status(404).send({error: "没有抽奖次数了，分享抽奖得到更多次数"});
+                db.close();
+            }else{
+                await new Promise((resolve,reject)=>{
+                    col_draw.updateOne({draw_id: req.body.draw_id},{$addToSet:{joiners: joiner}},(update_err,update_result)=>{
+                        if(update_err) reject(update_err);
+                        console.log("抽奖中更新用户成功");
+                        resolve(update_result);
+                    })
+                }).catch((err)=>{throw err});
+                await new Promise((resolve,reject)=>{
+                    col_joiner.insertOne({id: joiner, draw_id: req.body.draw_id, formId: req.body.formId, result: null}, (insert_err,insert_result)=>{
+                        if(insert_err) reject(insert_err);
+                        console.log("加入formId成功");
+                        resolve(insert_result);
+                    });
+                }).catch((err)=>{throw err});
+                await new Promise((resolve,reject)=>{
+                    col_user.updateOne({id: joiner},{$inc:{chance: -1}},(update_err,update_result)=>{
+                        if(update_err) reject(update_err);
+                        console.log("抽奖次数减1");
+                        resolve(update_result);
+                    })
+                }).catch((err)=>{throw err});
+                
+                resback.send({error: null});
+                db.close();
+            }
         }
+        
+        
 
         //一般find需要通过Toarray，findOne不需要
         
