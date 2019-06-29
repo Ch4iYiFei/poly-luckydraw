@@ -316,16 +316,16 @@ router.post("/fetch/userDraw", (req,resback)=>{
             var col_draw = dbase.collection("draw");
             var col_joiner = dbase.collection("joiner");
             
-            var joinedDraw = await findJoinedDraw(col_draw,user).catch((err)=>{throw err});
+            var joinedDraw = await findJoinedDraw(col_joiner,user).catch((err)=>{throw err});
 
             var publishedDraw = await findPublishedDraw(col_draw,user).catch((err)=>{throw err});
 
-            var awardList = await getAwardList(col_joiner,user).catch((err)=>{throw err});
+            var luckyArr = await getAwardList(col_joiner,user).catch((err)=>{throw err});
 
             //可能会对一个空的数组map
-            let luckyArr = awardList.map((val, index, arr) => {
-                return Object.assign(val.detached[0],{result: val.result});
-            })
+            // let luckyArr = awardList.map((val, index, arr) => {
+            //     return Object.assign(val.detached[0],{result: val.result});
+            // })
 
             db.close();
             var sendObj = {joinArr: joinedDraw,publishArr: publishedDraw,luckyArr: luckyArr};
@@ -346,8 +346,8 @@ router.post("/fetch/joinedDraw",(req,resback)=>{
         if(db_err) throw db_err;
         var dbase = db.db("lucky");
         console.log("db connected");
-        var col_draw = dbase.collection("draw");
-        var joinedDraw = await findJoinedDraw(col_draw,user).catch((err)=>{throw err});
+        var col_joiner = dbase.collection("joiner");
+        var joinedDraw = await findJoinedDraw(col_joiner,user).catch((err)=>{throw err});
         var object = {joinArr: joinedDraw};
         db.close();
         console.log("送出了参加的抽奖");
@@ -375,8 +375,8 @@ router.post("/fetch/publishedDraw",(req,resback)=>{
 })
 
 
-router.post("/fetch/awardList",(req,resback)=>{
-    console.log("/draw/fetch/awardList");
+router.post("/fetch/luckyDraw",(req,resback)=>{
+    console.log("/draw/fetch/luckyDraw");
     console.log(req.body);
     var token = req.body.jwt;
     var user = jwt.decode(token,secret).iss;
@@ -386,10 +386,7 @@ router.post("/fetch/awardList",(req,resback)=>{
         var dbase = db.db("lucky");
         console.log("db connected");
         var col_joiner = dbase.collection("joiner");
-        var awardList = await getAwardList(col_joiner,user).catch((err)=>{throw err});
-        let luckyArr = awardList.map((val, index, arr) => {
-            return Object.assign(val.detached[0],{result: val.result});
-        });
+        var luckyArr = await getAwardList(col_joiner,user).catch((err)=>{throw err});
         var object = {luckyArr: luckyArr};
         db.close();
         console.log("送出了奖品列表");
@@ -398,26 +395,43 @@ router.post("/fetch/awardList",(req,resback)=>{
 })
 
 async function findJoinedDraw(col,user){
+    var aggres = await new Promise((resolve,reject)=>{
+        col.aggregate([
+            {$match:
+                {
+                    id: user,
+                }
+            },
+            {$lookup:
+                {
+                    from: "draw",
+                    localField: "draw_id",
+                    foreignField: "draw_id",
+                    as: "detached"
+                }
+            }
+        ]).toArray((agg_err,agg_result)=>{
+            if(agg_err) reject(agg_err);
+            //console.log(JSON.stringify(agg_result));
+            resolve(agg_result);
+        })
+    });
+    return Promise.all(aggres.map((val)=>{
+        resolve(Object.assign(val.detached[0],{result: val.result}));
+    }));
+}
+
+async function findPublishedDraw(col,user){
     return new Promise((resolve,reject)=>{
-        col.find({"joiners":{$all:[user]}}).toArray((find_err,find_result)=>{
+        col.find({publisher: user}).toArray((find_err,find_result)=>{
             if(find_err) reject(find_err);
-            //可能没参与过
             resolve(find_result);
         })
     });
 }
 
-async function findPublishedDraw(col,user){
-    return new Promise((reslove,reject)=>{
-        col.find({publisher: user}).toArray((find_err,find_result)=>{
-            if(find_err) reject(find_err);
-            reslove(find_result);
-        })
-    });
-}
-
 async function getAwardList(col,user){
-    return new Promise((reslove,reject)=>{
+    var awardList = await new Promise((resolve,reject)=>{
         col.aggregate([
             {$match:
                 {
@@ -437,9 +451,12 @@ async function getAwardList(col,user){
         ]).toArray((agg_err,agg_result)=>{
             if(agg_err) reject(agg_err);
             //console.log(JSON.stringify(agg_result));
-            reslove(agg_result);
+            resolve(agg_result);
         })
     });
+    return Promise.all(awardList.map((val)=>{
+        resolve(Object.assign(val.detached[0],{result: val.result}));
+    }));
 }
 
 
@@ -483,7 +500,7 @@ router.get("/test",(req,resback)=>{
         var col = dbase.collection("draw");
         var col_joiner = dbase.collection("joiner");
 
-        var awardList = await new Promise((reslove,reject)=>{
+        var awardList = await new Promise((resolve,reject)=>{
             col_joiner.aggregate([
                 {$match:
                     {
@@ -503,7 +520,7 @@ router.get("/test",(req,resback)=>{
             ]).toArray((agg_err,agg_result)=>{
                 if(agg_err) reject(agg_err);
                 //console.log(JSON.stringify(agg_result));
-                reslove(agg_result)
+                resolve(agg_result)
             })
         }).catch((err)=>{throw err});
 
