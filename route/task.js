@@ -115,10 +115,10 @@ module.exports = {
                         "value": info.awards.toString()
                     },
                     "keyword2": {
-                        "value": "点击进入查看抽奖结果"
+                        "value": "开奖了，赶紧戳"
                     },
                     "keyword3": {
-                        "value": "此处为抽奖提醒"
+                        "value": "点击查看抽奖结果"
                     }
                 },
                 "emphasis_keyword": "keyword2.DATA"
