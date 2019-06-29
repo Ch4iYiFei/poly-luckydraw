@@ -420,10 +420,8 @@ async function findJoinedDraw(col,user){
             resolve(agg_result);
         })
     });
-    return Promise.all(aggres.map(async(val)=>{
-        await new Promise((resolve,reject)=>{
-            resolve(Object.assign(val.detached[0],{result: val.result}));
-        })
+    return Promise.all(aggres.map((val)=>{
+        return Promise.resolve(Object.assign(val.detached[0],{result: val.result}));
     }));
 }
 
@@ -460,10 +458,8 @@ async function getAwardList(col,user){
             resolve(agg_result);
         })
     });
-    return Promise.all(awardList.map(async(val)=>{
-        await new Promise((resolve,reject)=>{
-            resolve(Object.assign(val.detached[0],{result: val.result}));
-        })
+    return Promise.all(awardList.map((val)=>{
+        return Promise.resolve(Object.assign(val.detached[0],{result: val.result}));
     }));
 }
 
