@@ -505,42 +505,40 @@ router.get("/test",(req,resback)=>{
         var col_joiner = dbase.collection("joiner");
 
         var awardList = await new Promise((resolve,reject)=>{
-            col_joiner.aggregate([
+            col.aggregate([
                 {$match:
                     {
-                        id: "oSv7E5EDu4PRZnVkUhbwGIG5uR6c",
-                        result: {$gte: 0}
+                        publisher: "oSv7E5LmGHRR8ZNFIzrOhenjT8gs"
                     }
-    
                 },
                 {$lookup:
                     {
-                        from: "draw",
+                        from: "joiner",
                         localField: "draw_id",
                         foreignField: "draw_id",
                         as: "detached"
                     }
-                }
-            ]).toArray((agg_err,agg_result)=>{
-                if(agg_err) reject(agg_err);
-                //console.log(JSON.stringify(agg_result));
-                resolve(agg_result)
-            })
+    
+                },
+                {$unwind:
+                    "detached"
+                },
+            ])
         }).catch((err)=>{throw err});
 
         console.log(awardList);
 
         //可能会对一个空的数组map
-        let luckyArr = awardList.map((val, index, arr) => {
-            console.log(val.result);
-            console.log(val.detached[0]);
-            var res = Object.assign(val.detached[0],{result: val.result});
-            console.log(res);
-            return res;
-        })
+        // let luckyArr = awardList.map((val, index, arr) => {
+        //     console.log(val.result);
+        //     console.log(val.detached[0]);
+        //     var res = Object.assign(val.detached[0],{result: val.result});
+        //     console.log(res);
+        //     return res;
+        // })
 
 
-        resback.send(luckyArr);
+        resback.send(awardList);
         // col.find({draw_id: {$nin:[]}}).toArray((find_err,find_result)=>{
         //     if(find_err) throw find_err;
         //     console.log("sgffdggdgf");
