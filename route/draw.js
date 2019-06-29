@@ -317,10 +317,14 @@ router.post("/fetch/userDraw", (req,resback)=>{
             var col_joiner = dbase.collection("joiner");
             
             var joinedDraw = await findJoinedDraw(col_joiner,user).catch((err)=>{throw err});
+            console.log("-----------参与抽奖------------")
+            console.log(joinedDraw);
 
             var publishedDraw = await findPublishedDraw(col_draw,user).catch((err)=>{throw err});
 
             var luckyArr = await getAwardList(col_joiner,user).catch((err)=>{throw err});
+            console.log("-----------中奖列表------------")
+            console.log(luckyArr);
 
             //可能会对一个空的数组map
             // let luckyArr = awardList.map((val, index, arr) => {
