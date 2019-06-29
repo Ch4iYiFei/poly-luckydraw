@@ -521,7 +521,7 @@ router.get("/test",(req,resback)=>{
     
                 },
                 {$unwind:
-                    "detached"
+                    "$detached"
                 },
             ]).toArray((agg_err,agg_result)=>{
                 if(agg_err) reject(agg_err);
