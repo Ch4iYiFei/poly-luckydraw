@@ -222,11 +222,19 @@ router.post("/luckyInfo",(req,resback)=>{
                     foreignField: "id",
                     as: "detached"
                 }
+            },
+            {$unwind:
+                "$detached"
             }
         ]).toArray((agg_err,agg_result)=>{
             if(agg_err) throw agg_err;
             console.log(agg_result);
-            resback.send(agg_result);
+            var luckyInfo=agg_result.map((element)=>{
+                element.detached.result = element.result
+                return element.detached;
+                return Object.assign(element.detached,{result: element.result});
+            })
+            resback.send({arr:luckyInfo});
             db.close();
         })
     })
