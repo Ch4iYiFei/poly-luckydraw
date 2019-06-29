@@ -197,4 +197,39 @@ router.post("/chanceNum",(req,resback)=>{
     })
 })
 
+router.post("/luckyInfo",(req,resback)=>{
+    console.log("/user/luckyInfo");
+    var token = req.body.jwt;
+    var user = jwt.decode(token,secret).iss;
+
+    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db)=>{
+        if(db_err) throw db_err;
+        var dbase = db.db("lucky"); 
+        console.log("db connected");
+        var col_joiner = dbase.collection("joiner");
+        
+        col_joiner.aggregate([
+            {$match:
+                {
+                    draw_id: req.body.draw_id,
+                    result:{$gte: 0}
+                }
+            },
+            {$lookup:
+                {
+                    from: "user",
+                    localField: "id",
+                    foreignField: "id",
+                    as: "detached"
+                }
+            }
+        ]).toArray((agg_err,agg_result)=>{
+            if(agg_err) throw agg_err;
+            console.log(agg_result);
+            resback.send(agg_result);
+            db.close();
+        })
+    })
+})
+
 module.exports = router;

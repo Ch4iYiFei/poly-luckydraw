@@ -398,6 +398,7 @@ router.post("/fetch/luckyDraw",(req,resback)=>{
     });
 })
 
+
 async function findJoinedDraw(col,user){
     var aggres = await new Promise((resolve,reject)=>{
         col.aggregate([
@@ -523,6 +524,12 @@ router.get("/test",(req,resback)=>{
                 {$unwind:
                     "$detached"
                 },
+                // {$match:
+                //     {
+                //         detached.result: {$gte:0}
+                //     }
+                    
+                // }
             ]).toArray((agg_err,agg_result)=>{
                 if(agg_err) reject(agg_err);
             //console.log(JSON.stringify(agg_result));
