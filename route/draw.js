@@ -348,7 +348,7 @@ router.post("/fetch/joinedDraw",(req,resback)=>{
         console.log("db connected");
         var col_joiner = dbase.collection("joiner");
         var joinedDraw = await findJoinedDraw(col_joiner,user).catch((err)=>{throw err});
-        var object = {joinArr: joinedDraw};
+        var object = {arr: joinedDraw};
         db.close();
         console.log("送出了参加的抽奖");
         resback.send(object);
@@ -367,7 +367,7 @@ router.post("/fetch/publishedDraw",(req,resback)=>{
         console.log("db connected");
         var col_draw = dbase.collection("draw");
         var publishedDraw = await findPublishedDraw(col_draw,user).catch((err)=>{throw err});
-        var object = {publishArr: publishedDraw};
+        var object = {arr: publishedDraw};
         db.close();
         console.log("送出了发布的抽奖");
         resback.send(object);
@@ -387,7 +387,7 @@ router.post("/fetch/luckyDraw",(req,resback)=>{
         console.log("db connected");
         var col_joiner = dbase.collection("joiner");
         var luckyArr = await getAwardList(col_joiner,user).catch((err)=>{throw err});
-        var object = {luckyArr: luckyArr};
+        var object = {arr: luckyArr};
         db.close();
         console.log("送出了奖品列表");
         resback.send(object);
