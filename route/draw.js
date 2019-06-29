@@ -523,7 +523,11 @@ router.get("/test",(req,resback)=>{
                 {$unwind:
                     "detached"
                 },
-            ])
+            ]).toArray((agg_err,agg_result)=>{
+                if(agg_err) reject(agg_err);
+            //console.log(JSON.stringify(agg_result));
+                resolve(agg_result);
+            })
         }).catch((err)=>{throw err});
 
         console.log(awardList);
