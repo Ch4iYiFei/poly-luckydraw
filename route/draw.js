@@ -269,7 +269,7 @@ router.post("/findOne",(req,resback)=>{
         var col_joiner = dbase.collection("joiner");
         col.findOne({draw_id: req.body.draw_id}, (find_err,find_result_in_draw)=>{
             if(find_err) throw find_err;
-            console.log(find_result_in_draw);
+            console.log(find_result_in_draw.read);
             if(!find_result_in_draw){
                 console.log("查询了一个已经不存在的抽奖");
                 resback.status(404).send({error: "该抽奖不存在或已被删除"});
@@ -282,6 +282,8 @@ router.post("/findOne",(req,resback)=>{
                     console.log(find_result_in_joiner);
                     col.updateOne({draw_id: req.body.draw_id},{$inc:{read: 1}},(update_err,update_result)=>{
                         if(update_err) throw update_err;
+                        ++find_result_in_draw.read;
+                        console.log(find_result_in_draw.read);
                         resback.send(Object.assign(find_result_in_draw,find_result_in_joiner));
                         console.log("阅读次数加一；了");
                         db.close();
