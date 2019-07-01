@@ -280,9 +280,9 @@ router.post("/findOne",(req,resback)=>{
                     if(find_err) throw find_err;
                 
                     console.log(find_result_in_joiner);
-                    resback.send(Object.assign(find_result_in_draw,find_result_in_joiner));
                     col.updateOne({draw_id: req.body.draw_id},{$inc:{read: 1}},(update_err,update_result)=>{
                         if(update_err) throw update_err;
+                        resback.send(Object.assign(find_result_in_draw,find_result_in_joiner));
                         console.log("阅读次数加一；了");
                         db.close();
                     })
