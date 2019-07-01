@@ -108,8 +108,12 @@ router.post("/fetch/public", (req,resback)=>{
 
         resback.send({arr: sendObj});
 
+        var ids = sendObj.map((val)=>{
+            return val._id;
+        })
+
         var updateObj = await new Promise((resolve,reject)=>{
-            col.updateMany({isPublic: "true", draw_id: {$nin: req.body.owned}},{$inc:{read: 1}},(update_err,update_result)=>{
+            col.updateMany({_id:{$in: ids}},{$inc:{read: 1}},(update_err,update_result)=>{
                 if(update_err) reject(update_err);
                 console.log("不知道有没有加一");
                 resolve(update_result);
