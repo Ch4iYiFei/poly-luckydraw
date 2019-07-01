@@ -88,7 +88,7 @@ router.post("/fetch/public", (req,resback)=>{
     var limitnum = 3;
     console.log("使用者:",user);
 
-    MongoClient.connect(db_url,{ useNewUrlParser: true },(db_err,db) => {
+    MongoClient.connect(db_url,{ useNewUrlParser: true },async (db_err,db) => {
         if(db_err) throw db_err;
         var dbase = db.db("lucky");
         console.log("db connected");
