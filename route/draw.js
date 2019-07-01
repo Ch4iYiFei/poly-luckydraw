@@ -106,12 +106,14 @@ router.post("/fetch/public", (req,resback)=>{
             });
         }).catch((err)=>{throw err});
 
-        resback.send({arr: sendObj});
+        
 
         var ids = sendObj.map((val)=>{
             ++val.read;
             return val._id;
         })
+
+        resback.send({arr: sendObj});
 
         var updateObj = await new Promise((resolve,reject)=>{
             col.updateMany({_id:{$in: ids}},{$inc:{read: 1}},(update_err,update_result)=>{
