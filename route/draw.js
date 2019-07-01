@@ -109,6 +109,7 @@ router.post("/fetch/public", (req,resback)=>{
         resback.send({arr: sendObj});
 
         var ids = sendObj.map((val)=>{
+            ++val.read;
             return val._id;
         })
 
