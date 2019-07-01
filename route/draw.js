@@ -66,7 +66,7 @@ router.post("/publish", upload.single("draw"), (req, resback) => {//draw为field
         console.log("发布者",publisher);
         var awards = JSON.parse(req.body.awards);
         
-        var object = {draw_id: draw_id, name: file.filename, publisher:publisher, awards: awards, desc: req.body.desc, date:req.body.date, time: req.body.time, isPublic:req.body.isPublic, joiners: []};
+        var object = {draw_id: draw_id, name: file.filename, publisher:publisher, awards: awards, desc: req.body.desc, date:req.body.date, time: req.body.time, isPublic:req.body.isPublic, joiners: [], read: 0};
         console.log(object);
         col.insertOne(object, (insert_err,insert_result)=>{
             if(insert_err) throw insert_err;
@@ -98,12 +98,25 @@ router.post("/fetch/public", (req,resback)=>{
         //此处的true可能对与引号有问题
         //优化排序的问题
         //优化一直fetch的问题
-        col.find({isPublic: "true", draw_id: {$nin: req.body.owned}}).sort({date: 1}).limit(limitnum).toArray((find_err,find_result)=>{
-            if(find_err)  throw find_err;
-            console.log(find_result);
-            resback.send({arr: find_result});
-            db.close();
-        });
+        var sendObj = await new Promise((resolve,reject)=>{
+            col.find({isPublic: "true", draw_id: {$nin: req.body.owned}}).sort({date: 1}).limit(limitnum).toArray((find_err,find_result)=>{
+                if(find_err)  reject(find_err);
+                console.log(find_result);
+                resolve(find_result);
+            });
+        }).catch((err)=>{throw err});
+
+        resback.send({arr: sendObj});
+
+        var updateObj = await new Promise((resolve,reject)=>{
+            col.updateMany({isPublic: "true", draw_id: {$nin: req.body.owned}},{$inc:{read: 1}},(update_err,update_result)=>{
+                if(update_err) reject(update_err);
+                console.log("不知道有没有加一");
+                resolve(update_result);
+            })
+        }).catch((err)=>{throw err});
+
+        db.close();
     });
 });
 
